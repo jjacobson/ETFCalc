@@ -16,13 +16,15 @@ class WebScraper(object):
         
     def __make_request(self, ticker, etf):
         ticker_type = "etf" if etf else "stock"
-        url = 'http://etfdb.com/' + ticker_type + '/' + ticker
-        return requests.get(url)
+        url = 'http://etfdb.com/' + ticker_type + '/' + ticker + '/'
+        return requests.get(url, allow_redirects=False)
 
     def __valid_request(self, response):
         return response.status_code == requests.codes.ok
 
     def __scrape_stock(self, ticker, response, holdings):
+        if not self.__valid_request(response):
+            return None
         page_content = response.content
         title = self.__get_title(page_content)[10:]
         title = title.split('(')[0]

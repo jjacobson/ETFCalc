@@ -1,6 +1,6 @@
 class Holding(object):
 
-    def __init__(self, name, ticker, weight=1):
+    def __init__(self, name, ticker, weight=100):
         self.name = name
         self.ticker = ticker
         self.weight = weight
