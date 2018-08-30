@@ -14,6 +14,7 @@ def get_holdings(portfolio):
             if not underlying in data:
                 holding.set_weight(weight)
                 data[underlying] = holding
+                continue
             previous_weight = data[underlying].get_weight()
             data[underlying].set_weight(previous_weight + weight)
     return data

@@ -8,7 +8,8 @@ app = Flask(__name__)
 def hello_world():
 
     portfolio = Portfolio()
-    portfolio.set_amount('QQQ', 1)
+    portfolio.set_amount('QQQ', 6)
+    portfolio.set_amount('AAPL', 4)
 
     data = holdings_calculator.get_holdings(portfolio)
     for ticker, value in data.items():
