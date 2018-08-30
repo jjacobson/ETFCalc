@@ -3,6 +3,9 @@ class Portfolio(object):
     def __init__(self):
         self.holdings = {}
 
+    def get_holdings(self):
+        return self.holdings
+
     def set_amount(self, ticker, amount):
         self.holdings[ticker] = amount
 

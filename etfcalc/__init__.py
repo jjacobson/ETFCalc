@@ -1,12 +1,19 @@
 from flask import Flask, render_template, request
-from util import webscraper
+from util import holdings_calculator
+from util.portfolio import Portfolio
 
 app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    data = webscraper.scrape_ticker('QQQ')
-    return str(data[97])
+
+    portfolio = Portfolio()
+    portfolio.set_amount('ERX', 1)
+
+    data = holdings_calculator.get_holdings(portfolio)
+    for ticker, value in data.items():
+        print(ticker, value)
+    return str('data[97]')
 
 if __name__ == '__main__':
     app.run()

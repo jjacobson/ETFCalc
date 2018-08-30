@@ -55,11 +55,19 @@ def __get_etf_holding(entry):
     name = ticker = ''
     data = entry['holding']
     pq = PyQuery(data)
+
+    # handle normal cases of actual stocks
     if pq('a').length:
         name = pq('a').text().split('(')[0]
         ticker = pq('a').attr('href').split('/')[2]
+    # handle special underlyings e.g. VIX futures
+    elif pq('span').eq(2).length:
+        name = data
+        ticker = pq('span').eq(2).text()
+    # handle further special cases e.g. Cash components, Hogs, Cattle
     else:
         name = data
+        ticker = data
     weight = entry['weight'][:-1]
     return Holding(name, ticker, weight)
 
