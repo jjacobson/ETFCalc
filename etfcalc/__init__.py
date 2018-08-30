@@ -8,11 +8,11 @@ app = Flask(__name__)
 def hello_world():
 
     portfolio = Portfolio()
-    portfolio.set_amount('ERX', 1)
+    portfolio.set_amount('QQQ', 1)
 
     data = holdings_calculator.get_holdings(portfolio)
     for ticker, value in data.items():
-        print(ticker, value)
+        print(value)
     return str('data[97]')
 
 if __name__ == '__main__':

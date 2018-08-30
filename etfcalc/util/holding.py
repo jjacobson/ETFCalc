@@ -14,5 +14,8 @@ class Holding(object):
     def get_weight(self):
         return self.weight
 
+    def set_weight(self, weight):
+        self.weight = weight
+
     def __str__(self):
         return self.name + ' (' + self.ticker + ') ' + str(self.weight)
