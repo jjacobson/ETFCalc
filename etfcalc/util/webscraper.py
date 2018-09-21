@@ -2,64 +2,87 @@ from .holding import Holding
 from pyquery import PyQuery
 import requests, json
 
+import pandas as pd
+pd.core.common.is_list_like = pd.api.types.is_list_like
+from pandas_datareader.nasdaq_trader import get_nasdaq_symbols
+symbols = get_nasdaq_symbols()
+
 def scrape_ticker(ticker):
-    response = __make_request(ticker, True)
     holdings = []
-    if __valid_request(response):
-        __scrape_etf(ticker, response, holdings)
-    else:
-        response = __make_request(ticker, False)
-        __scrape_stock(ticker, response, holdings)
-    return holdings
+    data = _get_data(ticker)
+
+    # invalid ticker
+    if data.empty:
+        return holdings
     
-def __make_request(ticker, etf):
-    ticker_type = "etf" if etf else "stock"
-    url = 'http://etfdb.com/' + ticker_type + '/' + ticker + '/'
-    return requests.get(url, allow_redirects=False)
+    if _is_etf(data):
+        _get_etf_data(ticker, data, holdings)
+    else:
+        _get_stock_data(ticker, data, holdings)
+    return holdings
 
-def __valid_request(response):
-    return response.status_code == requests.codes.ok
+def _get_data(ticker):
+    data = None
+    try:
+        data = symbols.ix[ticker]
+    except KeyError:
+        print('Failed to get data for ticker ', ticker)
+    return data
 
-def __scrape_stock(ticker, response, holdings):
-    if not __valid_request(response):
-        return None
+def _is_etf(data):
+    return data.ix['ETF']
+
+def _get_etf_data(ticker, data, holdings):
+    response = _make_request(ticker)
+    if not _valid_request(response):
+        print('Failed to get holdings for ticker ', ticker)
+        return
+
     page_content = response.content
-    title = __get_title(page_content)[10:]
-    title = title.split('(')[0]
+    title = data.ix['Security Name']
+    
+    url = _get_holdings_url(page_content)
+    holdings_json = requests.get(url + str(0)).json()
+    rows = holdings_json['total']
+    print('total rows' , rows)
+    for i in range(0, rows, 15):
+        for entry in holdings_json['rows']:
+            holding = _get_etf_holding(entry)
+            holdings.append(holding)
+        holdings_json = requests.get(url + str(i + 15)).json()
+
+def _get_stock_data(ticker, data, holdings):
+    title = data.ix['Security Name']
     holding = Holding(title, ticker)
     holdings.append(holding)
 
-def __scrape_etf(ticker, response, holdings):
-    page_content = response.content
-    title = __get_title(page_content)
-    
-    url = __get_holdings_url(page_content)
-    holdings_json = requests.get(url).json()
+def _make_request(ticker):
+    url = 'http://etfdb.com/etf/' + ticker + '/'
+    return requests.get(url, allow_redirects=False)
 
-    for entry in holdings_json['rows']:
-        holding = __get_etf_holding(entry)
-        holdings.append(holding) 
+def _valid_request(response):
+    return response.status_code == requests.codes.ok
 
-def __get_title(content):
+def _get_title(content):
     pq = PyQuery(content)
     return pq("meta[property='og:title']").attr('content')
 
-def __get_holdings_url(content):
+def _get_holdings_url(content):
     pq = PyQuery(content)
     url = 'http://etfdb.com/'
-    sort = '&sort=weight&order=desc&limit=1000'
+    sort = '&sort=weight&order=desc&limit=15&offset='
     url += pq("table[data-hash='etf-holdings']").attr('data-url') + sort
     return url
 
-def __get_etf_holding(entry):
+def _get_etf_holding(entry):
     name = ticker = ''
     data = entry['holding']
     pq = PyQuery(data)
 
     # handle normal cases of actual stocks
     if pq('a').length:
-        name = pq('a').text().split('(')[0]
         ticker = pq('a').attr('href').split('/')[2]
+        name = _get_data(ticker).ix['Security Name']
     # handle special underlyings e.g. VIX futures
     elif pq('span').eq(2).length:
         name = data
@@ -70,4 +93,3 @@ def __get_etf_holding(entry):
         ticker = data
     weight = entry['weight'][:-1]
     return Holding(name, ticker, weight)
-

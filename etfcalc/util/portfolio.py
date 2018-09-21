@@ -5,6 +5,9 @@ class Portfolio(object):
 
     def get_holdings(self):
         return self.holdings
+    
+    def get_tickers(self):
+        return list(self.holdings.keys())
 
     def set_amount(self, ticker, amount):
         self.holdings[ticker] = amount
