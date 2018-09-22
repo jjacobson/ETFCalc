@@ -1,3 +1,5 @@
 env/
 .vscode/
 etfcalc.egg-info/
+cache_data.sqlite
+etfcalc/__pycache__
