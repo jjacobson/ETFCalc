@@ -1,0 +1,44 @@
+{% extends 'base.html' %} 
+
+{% block head %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/input.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<template>
+    <tr>
+        <td>
+            <input type="text" class="form-control" placeholder="SPY">
+        </td>
+        <td>
+            <input type="number" class="form-control" value="0" size="16">
+        </td>
+        <td>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">$</span>
+                </div>
+                <input type="text" class="form-control">
+            </div>
+        </td>
+    </tr>
+</template>
+
+
+<div class="row py-5">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Ticker</th>
+                <th>Shares</th>
+                <th class="w-25">Price</th>
+            </tr>
+        </thead>
+        <tbody id="holding-table"></tbody>
+    </table>
+</div>
+<div class="row float-right">
+    <button type="button" class="btn btn-secondary mr-1">Add</button>
+    <button type="button" class="btn btn-primary">Calculate</button>
+</div>
+{% endblock %}

@@ -1,12 +1,14 @@
 from .holding import Holding
 from pyquery import PyQuery
-import requests, json
-
+import requests, json, requests_cache
 import pandas as pd
 pd.core.common.is_list_like = pd.api.types.is_list_like
 from pandas_datareader.nasdaq_trader import get_nasdaq_symbols
-symbols = get_nasdaq_symbols()
 
+symbols = get_nasdaq_symbols()
+requests_cache.install_cache('cache_data')
+
+# Scrape name and holdings if any for a given ticker
 def scrape_ticker(ticker):
     holdings = []
     data = _get_data(ticker)
@@ -21,16 +23,17 @@ def scrape_ticker(ticker):
         _get_stock_data(ticker, data, holdings)
     return holdings
 
+# Get the nasdaq data for a given ticker
 def _get_data(ticker):
     data = None
     try:
-        data = symbols.ix[ticker]
+        data = symbols.loc[ticker]
     except KeyError:
         print('Failed to get data for ticker ', ticker)
     return data
 
 def _is_etf(data):
-    return data.ix['ETF']
+    return data.loc['ETF']
 
 def _get_etf_data(ticker, data, holdings):
     response = _make_request(ticker)
@@ -39,12 +42,11 @@ def _get_etf_data(ticker, data, holdings):
         return
 
     page_content = response.content
-    title = data.ix['Security Name']
+    title = data.loc['Security Name']
     
     url = _get_holdings_url(page_content)
     holdings_json = requests.get(url + str(0)).json()
     rows = holdings_json['total']
-    print('total rows' , rows)
     for i in range(0, rows, 15):
         for entry in holdings_json['rows']:
             holding = _get_etf_holding(entry)

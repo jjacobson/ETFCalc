@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row py-5">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Ticker</th>
+                <th>Name</th>
+                <th>Weight</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ticker, holding in data.items() %}
+            <tr>
+                <td class="c2">{{ holding.name }}</td>
+                <td class="c2">{{ ticker }}</td>
+                <td class="c2">{{ holding.weight }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="row pb-5">
+    <button type="button" class="btn btn-secondary">Back</button>
+</div>
+{% endblock %}
