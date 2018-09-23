@@ -21,24 +21,28 @@
                 <input type="text" class="form-control">
             </div>
         </td>
+        <td>
+            <button type="button" class="btn btn-danger" onclick="remove_row(this)">x</button>
+        </td>
     </tr>
 </template>
 
 
 <div class="row py-5">
-    <table class="table">
+    <table class="table table-sm">
         <thead>
             <tr>
                 <th>Ticker</th>
                 <th>Shares</th>
                 <th class="w-25">Price</th>
+                <th></th>
             </tr>
         </thead>
         <tbody id="holding-table"></tbody>
     </table>
 </div>
 <div class="row float-right">
-    <button type="button" class="btn btn-secondary mr-1">Add</button>
+    <button type="button" class="btn btn-secondary mr-1" onclick="add_row()">Add</button>
     <button type="button" class="btn btn-primary">Calculate</button>
 </div>
 {% endblock %}
