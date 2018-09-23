@@ -54,7 +54,7 @@ def _get_etf_data(ticker, data, holdings):
         holdings_json = requests.get(url + str(i + 15)).json()
 
 def _get_stock_data(ticker, data, holdings):
-    title = data.ix['Security Name']
+    title = data.loc['Security Name']
     holding = Holding(title, ticker)
     holdings.append(holding)
 
@@ -84,7 +84,7 @@ def _get_etf_holding(entry):
     # handle normal cases of actual stocks
     if pq('a').length:
         ticker = pq('a').attr('href').split('/')[2]
-        name = _get_data(ticker).ix['Security Name']
+        name = _get_data(ticker).loc['Security Name']
     # handle special underlyings e.g. VIX futures
     elif pq('span').eq(2).length:
         name = data
