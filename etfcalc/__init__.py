@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import pandas as pd
 from pandas_datareader.nasdaq_trader import get_nasdaq_symbols
 import pandas_datareader.data as web
@@ -10,7 +10,14 @@ from .util.portfolio import Portfolio
 app = Flask(__name__)
 
 @app.route('/')
-def hello_world():
+def main():
+    return render_template('input/input.html')
+
+@app.route('/output', methods=['POST'])
+def output():
+    tickers = request.form.getlist('tickers')
+    for ticker in tickers:
+        print(ticker)
 
     portfolio = Portfolio()
     portfolio.set_amount('V', 4)
@@ -31,6 +38,5 @@ def hello_world():
         total = total + value.get_weight()
         print(str(value))
     print('TOTAL IS ', total)
-    
-    return render_template('input/input.html')
-   #return render_template('output/output.html', data=data)
+
+    return render_template('output/output.html', data=data)

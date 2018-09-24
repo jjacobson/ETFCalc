@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block head %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/output.js') }}"></script>
+{% endblock %}
+
 {% block content %}
 <div class="row py-5">
     <table class="table">
@@ -22,6 +26,6 @@
     </table>
 </div>
 <div class="row pb-5">
-    <button type="button" class="btn btn-secondary">Back</button>
+    <button type="button" class="btn btn-secondary" onclick="back()">Back</button>
 </div>
 {% endblock %}

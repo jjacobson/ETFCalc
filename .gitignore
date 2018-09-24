@@ -3,3 +3,4 @@ env/
 etfcalc.egg-info/
 cache_data.sqlite
 etfcalc/__pycache__
+etfcalc/util/__pycache__
