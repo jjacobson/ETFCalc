@@ -21,7 +21,7 @@ def get_holdings(portfolio):
                 continue
             previous_weight = data[underlying].get_weight()
             data[underlying].set_weight(previous_weight + weight)
-    return data
+    return list(data.values())
 
 def _get_total(portfolio, prices):
     total = 0
@@ -37,7 +37,7 @@ def _get_prices(portfolio):
     return data.iloc[0]['Close']
 
 def _last_weekday():
-    weekday = today()
-    while today.weekday():
+    weekday = date.today() - timedelta(days=1)
+    while weekday.weekday():
         weekday -= timedelta(days=1)
     return weekday

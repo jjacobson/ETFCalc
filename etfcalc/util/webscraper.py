@@ -83,7 +83,7 @@ def _get_etf_holding(entry):
 
     # handle normal cases of actual stocks
     if pq('a').length:
-        ticker = pq('a').attr('href').split('/')[2]
+        ticker = pq('a').attr('href').split('/')[2].split(':')[0]
         name = _get_data(ticker).loc['Security Name']
     # handle special underlyings e.g. VIX futures
     elif pq('span').eq(2).length:

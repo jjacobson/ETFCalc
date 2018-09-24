@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+from operator import attrgetter
 import pandas as pd
 from pandas_datareader.nasdaq_trader import get_nasdaq_symbols
 import pandas_datareader.data as web
@@ -15,28 +16,15 @@ def main():
 
 @app.route('/output', methods=['POST'])
 def output():
-    tickers = request.form.getlist('tickers')
-    for ticker in tickers:
-        print(ticker)
-
     portfolio = Portfolio()
-    portfolio.set_amount('V', 4)
-    portfolio.set_amount('MSFT', 7)
-    portfolio.set_amount('XLF', 17)
-    portfolio.set_amount('INTC', 5)
-    portfolio.set_amount('XAR', 5)
-    portfolio.set_amount('XLY', 5)
-    portfolio.set_amount('XPO', 6)
-    portfolio.set_amount('WM', 7)
-    portfolio.set_amount('DIS', 5)
 
+    tickers = request.form.getlist('tickers')
+    shares = request.form.getlist('shares')
 
-    #data = holdings_calculator.get_holdings(portfolio)
-    data = {}
-    total = 0
-    for ticker, value in data.items():
-        total = total + value.get_weight()
-        print(str(value))
-    print('TOTAL IS ', total)
+    for ticker, shares in zip(tickers, shares):
+        portfolio.set_amount(ticker, int(shares))
+
+    data = holdings_calculator.get_holdings(portfolio)
+    data.sort(key=attrgetter('weight'), reverse=True)
 
     return render_template('output/output.html', data=data)

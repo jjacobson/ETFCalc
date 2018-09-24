@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="row py-5">
-    <table class="table">
+    <table class="table table-sm">
         <thead>
             <tr>
                 <th>Ticker</th>
@@ -15,10 +15,10 @@
             </tr>
         </thead>
         <tbody>
-            {% for ticker, holding in data.items() %}
+            {% for holding in data %}
             <tr>
                 <td class="c2">{{ holding.name }}</td>
-                <td class="c2">{{ ticker }}</td>
+                <td class="c2">{{ holding.ticker }}</td>
                 <td class="c2">{{ holding.weight }}</td>
             </tr>
             {% endfor %}
