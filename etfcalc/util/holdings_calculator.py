@@ -1,5 +1,5 @@
 import pandas_datareader.data as web
-from datetime import date
+from datetime import date, timedelta
 from .webscraper import scrape_ticker
 from .holding import Holding
 from .portfolio import Portfolio
@@ -32,6 +32,12 @@ def _get_total(portfolio, prices):
 
 def _get_prices(portfolio):
     tickers = portfolio.get_tickers()
-    today = "2018-09-20"
-    data = web.get_data_yahoo(tickers, today, today)
+    weekday = _last_weekday()
+    data = web.get_data_yahoo(tickers, weekday, weekday)
     return data.iloc[0]['Close']
+
+def _last_weekday():
+    weekday = today()
+    while today.weekday():
+        weekday -= timedelta(days=1)
+    return weekday
