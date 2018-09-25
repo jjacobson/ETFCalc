@@ -19,7 +19,7 @@ def output():
     for ticker, shares in zip(ticker_list, share_list):
         if not ticker or not shares:
             continue
-        portfolio.set_amount(ticker, int(shares))
+        portfolio.set_amount(ticker.upper(), int(shares))
 
     data = holdings_calculator.get_holdings(portfolio)
     data.sort(key=attrgetter('weight'), reverse=True)
