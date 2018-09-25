@@ -12,7 +12,7 @@ def scrape_ticker(ticker):
     data = _get_data(ticker)
 
     # invalid ticker
-    if data.empty:
+    if data is None:
         return holdings
     
     if _is_etf(data):
@@ -29,7 +29,7 @@ def _get_data(ticker):
     except KeyError:
         print('Failed to get data for ticker ', ticker)
     return data
-
+ 
 def _is_etf(data):
     return data.loc['ETF']
 

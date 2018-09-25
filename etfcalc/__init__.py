@@ -13,10 +13,12 @@ def main():
 def output():
     portfolio = Portfolio()
 
-    tickers = request.form.getlist('tickers')
-    shares = request.form.getlist('shares')
+    ticker_list = request.form.getlist('tickers')
+    share_list = request.form.getlist('shares')
 
-    for ticker, shares in zip(tickers, shares):
+    for ticker, shares in zip(ticker_list, share_list):
+        if not ticker or not shares:
+            continue
         portfolio.set_amount(ticker, int(shares))
 
     data = holdings_calculator.get_holdings(portfolio)
