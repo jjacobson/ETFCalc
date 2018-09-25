@@ -1,9 +1,7 @@
-from .holding import Holding
-from pyquery import PyQuery
 import requests, json, requests_cache
-import pandas as pd
-pd.core.common.is_list_like = pd.api.types.is_list_like
+from pyquery import PyQuery
 from pandas_datareader.nasdaq_trader import get_nasdaq_symbols
+from .holding import Holding
 
 symbols = get_nasdaq_symbols()
 requests_cache.install_cache('cache_data')
@@ -65,10 +63,6 @@ def _make_request(ticker):
 def _valid_request(response):
     return response.status_code == requests.codes.ok
 
-def _get_title(content):
-    pq = PyQuery(content)
-    return pq("meta[property='og:title']").attr('content')
-
 def _get_holdings_url(content):
     pq = PyQuery(content)
     url = 'http://etfdb.com/'
@@ -84,7 +78,13 @@ def _get_etf_holding(entry):
     # handle normal cases of actual stocks
     if pq('a').length:
         ticker = pq('a').attr('href').split('/')[2].split(':')[0]
-        name = _get_data(ticker).loc['Security Name']
+        holding_data = _get_data(ticker)
+        if holding_data is None:
+            # fall back to getting name from scraped data
+            name = pq('a').text().split('(')[0]
+        else:
+            # make use of official nasdaq data if available
+            name = holding_data.loc['Security Name']
     # handle special underlyings e.g. VIX futures
     elif pq('span').eq(2).length:
         name = data

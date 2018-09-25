@@ -1,10 +1,5 @@
 from flask import Flask, render_template, request
 from operator import attrgetter
-import pandas as pd
-from pandas_datareader.nasdaq_trader import get_nasdaq_symbols
-import pandas_datareader.data as web
-from datetime import datetime
-
 from .util import holdings_calculator
 from .util.portfolio import Portfolio
 
