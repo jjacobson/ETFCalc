@@ -27,7 +27,6 @@
     </tr>
 </template>
 
-
 <div class="row py-5">
     <form action="{{ url_for('output') }}" method="post" id="portfolio">
         <table class="table table-sm">
@@ -43,7 +42,7 @@
         </table>
     </form>
 </div>
-<div class="row float-right">
+<div class="row float-right mr-2">
     <button type="button" class="btn btn-secondary mr-1" onclick="add_row()">Add</button>
     <button type="submit" class="btn btn-primary" form="portfolio">Calculate</button>
 </div>
