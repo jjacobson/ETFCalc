@@ -8,4 +8,4 @@ I used this project to familiarize myself with web development and the flask fra
 
 ### Pictures
 ![Input page](https://i.imgur.com/UmxD0og.png)
-![Output page](https://i.imgur.com/vTieedC.png)
+![Output page](https://i.imgur.com/ZqUqxeF.png)
