@@ -18,11 +18,11 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text">$</span>
                 </div>
-                <input type="number" class="form-control" name="prices">
+                <input type="number" step="0.01" class="form-control" name="prices">
             </div>
         </td>
         <td>
-            <button type="button" class="btn btn-danger" onclick="remove_row(this)">x</button>
+            <button type="button" class="btn btn-danger" onclick="remove_row(this)" tabindex="-1">x</button>
         </td>
     </tr>
 </template>
