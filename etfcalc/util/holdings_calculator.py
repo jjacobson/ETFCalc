@@ -16,11 +16,11 @@ def get_holdings(portfolio):
             underlying = holding.get_ticker()
             weight = float(holding.get_weight()) * ratio
             if not underlying in data:
-                holding.set_weight(weight)
+                holding.set_weight(_round_weight(weight))
                 data[underlying] = holding
                 continue
             previous_weight = data[underlying].get_weight()
-            data[underlying].set_weight(previous_weight + weight)
+            data[underlying].set_weight(_round_weight(previous_weight + weight))
     return list(data.values())
 
 def _get_total(portfolio, prices):
@@ -41,3 +41,6 @@ def _last_weekday():
     while weekday.weekday():
         weekday -= timedelta(days=1)
     return weekday
+
+def _round_weight(weight):
+    return round(weight, 3)
