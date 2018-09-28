@@ -3,7 +3,8 @@ function back() {
 }
 
 $(document).ready(function () {
-    $('#datatable').DataTable({
-
+    $('#output_table').DataTable({
+        "order": [[ 2, "desc" ]],
+        "pageLength": 25
     });
 });
