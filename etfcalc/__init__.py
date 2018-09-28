@@ -21,7 +21,10 @@ def output():
             continue
         portfolio.set_amount(ticker.upper(), int(shares))
 
-    data = holdings_calculator.get_holdings(portfolio)
-    data.sort(key=attrgetter('weight'), reverse=True)
+    if portfolio.get_holdings():
+        data = holdings_calculator.get_holdings(portfolio)
+        data.sort(key=attrgetter('weight'), reverse=True)
+    else:
+        data = {}
 
     return render_template('output/output.html', data=data)
