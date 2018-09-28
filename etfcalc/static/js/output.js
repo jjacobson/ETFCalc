@@ -3,7 +3,7 @@ function back() {
 }
 
 $(document).ready(function () {
-    $('#output_table').DataTable({
+    $('#output-table').DataTable({
         "order": [[ 2, "desc" ]],
         "pageLength": 25
     });

@@ -45,6 +45,7 @@ def _get_etf_data(ticker, data, holdings):
     url = _get_holdings_url(page_content)
     holdings_json = requests.get(url + str(0)).json()
     rows = holdings_json['total']
+    # etfdb limits us to 15 tickers per page
     for i in range(0, rows, 15):
         for entry in holdings_json['rows']:
             holding = _get_etf_holding(entry)

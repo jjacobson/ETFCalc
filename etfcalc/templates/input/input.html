@@ -2,6 +2,7 @@
 
 {% block head %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/input.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/input.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -14,7 +15,7 @@
             <input type="number" class="form-control" placeholder="0" name="shares">
         </td>
         <td>
-            <div class="input-group mb-3">
+            <div class="input-group">
                 <div class="input-group-prepend">
                     <span class="input-group-text">$</span>
                 </div>
@@ -29,7 +30,7 @@
 
 <div class="row py-5">
     <form action="{{ url_for('output') }}" method="post" id="portfolio">
-        <table class="table table-sm">
+        <table class="table table-md">
             <thead>
                 <tr>
                     <th>Ticker</th>
@@ -42,7 +43,7 @@
         </table>
     </form>
 </div>
-<div class="row float-right mr-2">
+<div class="row float-right mr-1">
     <button type="button" class="btn btn-secondary mr-1" onclick="add_row()">Add</button>
     <button type="submit" class="btn btn-primary" form="portfolio">Calculate</button>
 </div>
