@@ -1,4 +1,4 @@
-import requests, json, requests_cache
+import requests, json, requests_cache, time
 from pyquery import PyQuery
 from pandas_datareader.nasdaq_trader import get_nasdaq_symbols
 from .holding import Holding
@@ -43,14 +43,23 @@ def _get_etf_data(ticker, data, holdings):
     title = data.loc['Security Name']
     
     url = _get_holdings_url(page_content)
-    holdings_json = requests.get(url + str(0)).json()
+    holdings_json = requests.get(url + str(0), hooks={'response' : _throttle_hook(0.5)}).json()
     rows = holdings_json['total']
     # etfdb limits us to 15 tickers per page
     for i in range(0, rows, 15):
         for entry in holdings_json['rows']:
             holding = _get_etf_holding(entry)
             holdings.append(holding)
-        holdings_json = requests.get(url + str(i + 15)).json()
+        holdings_json = requests.get(url + str(i + 15), hooks={'response' : _throttle_hook(0.5)}).json()
+
+# returns response hook function which sleeps for
+# timeout if the response is not yet cached
+def _throttle_hook(timeout):
+    def hook(response, *args, **kwargs):
+        if not getattr(response, 'from_cache', False):
+            time.sleep(timeout)
+        return response
+    return hook
 
 def _get_stock_data(ticker, data, holdings):
     title = data.loc['Security Name']
