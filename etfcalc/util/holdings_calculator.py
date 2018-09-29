@@ -6,10 +6,9 @@ from .portfolio import Portfolio
 
 def get_holdings(portfolio):
     data = {}
-    prices = _get_prices(portfolio)
-    total = _get_total(portfolio, prices)
+    total = _get_total(portfolio)
     for ticker, shares in portfolio.get_holdings().items():
-        price = prices[ticker]
+        price = portfolio.get_price(ticker)
         ratio = (shares * price) / total
         holdings = scrape_ticker(ticker)
         for holding in holdings:
@@ -23,10 +22,15 @@ def get_holdings(portfolio):
             data[underlying].set_weight(_round_weight(previous_weight + weight))
     return list(data.values())
 
-def _get_total(portfolio, prices):
+def get_price(ticker):
+    weekday = _last_weekday()
+    data = get_data_yahoo(ticker, weekday, weekday)
+    return _round_price(data.iloc[0]['Close'])
+
+def _get_total(portfolio):
     total = 0
     for ticker, shares in portfolio.get_holdings().items():
-        price = prices[ticker]
+        price = portfolio.get_price(ticker)
         total += shares * price
     return total
 
@@ -44,3 +48,6 @@ def _last_weekday():
 
 def _round_weight(weight):
     return round(weight, 3)
+
+def _round_price(price):
+    return round(price, 2)

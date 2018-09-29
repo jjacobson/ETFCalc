@@ -5,3 +5,7 @@
 .table-md td {
     padding: 0.5rem;
 }
+
+.dt-bootstrap4 {
+    width: 100% !important;
+}

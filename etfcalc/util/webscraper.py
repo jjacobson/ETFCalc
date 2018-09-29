@@ -9,7 +9,7 @@ requests_cache.install_cache('cache_data')
 # Scrape name and holdings if any for a given ticker
 def scrape_ticker(ticker):
     holdings = []
-    data = _get_data(ticker)
+    data = get_data(ticker)
 
     # invalid ticker
     if data is None:
@@ -22,7 +22,7 @@ def scrape_ticker(ticker):
     return holdings
 
 # Get the nasdaq data for a given ticker
-def _get_data(ticker):
+def get_data(ticker):
     data = None
     try:
         data = symbols.loc[ticker]
@@ -79,7 +79,7 @@ def _get_etf_holding(entry):
     # handle normal cases of actual stocks
     if pq('a').length:
         ticker = pq('a').attr('href').split('/')[2].split(':')[0]
-        holding_data = _get_data(ticker)
+        holding_data = get_data(ticker)
         if holding_data is None:
             # fall back to getting name from scraped data
             name = pq('a').text().split('(')[0]

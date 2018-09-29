@@ -2,6 +2,7 @@ class Portfolio(object):
 
     def __init__(self):
         self.holdings = {}
+        self.prices = {}
 
     def get_holdings(self):
         return self.holdings
@@ -12,14 +13,8 @@ class Portfolio(object):
     def set_amount(self, ticker, amount):
         self.holdings[ticker] = amount
 
-    def get_amount(self, ticker):
-        return self.holdings[ticker]
+    def get_price(self, ticker):
+        return self.prices[ticker]
 
-    def remove_holding(self, ticker):
-        del self.holdings[holding]
-
-    def clear_holdings(self):
-        self.holdings.clear()
-    
-
-
+    def set_price(self, ticker, price):
+        self.prices[ticker] = price
