@@ -35,7 +35,7 @@ def output():
 @app.route('/ticker_value', methods=['POST'])
 def ticker_value():
     ticker = request.form['ticker']
-
+    ticker = ticker.upper()
     if (webscraper.get_data(ticker) is None):
         print('invalid ticker, ignoring', ticker)
         return 'null'

@@ -1,3 +1,4 @@
+import requests_cache
 from pandas_datareader.data import get_data_yahoo
 from datetime import date, timedelta
 from .webscraper import scrape_ticker
@@ -24,7 +25,8 @@ def get_holdings(portfolio):
 
 def get_price(ticker):
     weekday = _last_weekday()
-    data = get_data_yahoo(ticker, weekday, weekday)
+    with requests_cache.disabled():
+        data = get_data_yahoo(ticker, weekday, weekday)
     return _round_price(data.iloc[0]['Close'])
 
 def _get_total(portfolio):
