@@ -9,3 +9,7 @@
 .dt-bootstrap4 {
     width: 100% !important;
 }
+
+.progress-bar {
+    width: 100%;
+}
