@@ -57,6 +57,7 @@ function add_row() {
 
 function remove_row(el) {
     let tr = el.parentElement.parentElement;
+    $(tr.querySelectorAll('input')[0]).tooltip({trigger: 'manual'}).tooltip('hide');
     tr.parentElement.removeChild(tr);
 }
 
