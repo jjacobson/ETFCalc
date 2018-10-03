@@ -26,7 +26,6 @@ function save_data() {
 }
 
 function load_data() {
-    console.log('loading');
     let table = document.getElementById('holding-table');
     let session_data = sessionStorage['form-data'];
 
@@ -38,11 +37,7 @@ function load_data() {
         add_row();
     }
 
-    console.log('data is ', data, data.length)
-
     for (let i = 0; i < data.length; i++) {
-        console.log('loading ticker ', i);
-
         if (!(data[i][0] && data[i][1] && data[i][2])) 
             continue;
 
@@ -81,10 +76,17 @@ function ticker_value(el, ticker) {
             return;
         }
         if (data == 'null') {
+            invalid_ticker(el, ticker);
             return;
         }
         let tr = el.parentElement.parentElement;
         price_input = tr.querySelectorAll('input')[2];
+        $(el).tooltip({trigger: 'manual'}).tooltip('hide');
         price_input.value = data;
+
     });
+}
+
+function invalid_ticker(el) {
+    $(el).tooltip({trigger: 'manual'}).tooltip('show');
 }
