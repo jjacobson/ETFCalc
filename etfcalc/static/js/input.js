@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function save_data() {
-    if (typeof(Storage) == 'undefined') {
+    if (typeof (Storage) == 'undefined') {
         return;
     }
 
@@ -18,7 +18,7 @@ function save_data() {
         let ticker = row.querySelector('[name=tickers]').value;
         let shares = row.querySelector('[name=shares]').value;
         let price = row.querySelector('[name=prices]').value;
-        if (!(ticker && shares && price)) 
+        if (!(ticker && shares && price))
             continue;
         data.push([ticker.toUpperCase(), shares, price]);
     }
@@ -38,7 +38,7 @@ function load_data() {
     }
 
     for (let i = 0; i < data.length; i++) {
-        if (!(data[i][0] && data[i][1] && data[i][2])) 
+        if (!(data[i][0] && data[i][1] && data[i][2]))
             continue;
 
         let row = table.rows[i];
@@ -52,13 +52,24 @@ function add_row() {
     let row = document.getElementsByTagName('template')[0];
     let table = document.getElementById('holding-table');
     let clone = row.content.cloneNode(true);
+    if (table.rows.length == 1) {
+        let button = table.rows[0].querySelector('button');
+        button.removeAttribute('disabled');
+    }
     table.appendChild(clone);
 }
 
 function remove_row(el) {
     let tr = el.parentElement.parentElement;
-    $(tr.querySelectorAll('input')[0]).tooltip({trigger: 'manual'}).tooltip('hide');
+    let table = document.getElementById('holding-table');
+    
+    $(tr.querySelectorAll('input')[0]).tooltip({ trigger: 'manual' }).tooltip('hide');
     tr.parentElement.removeChild(tr);
+
+    if (table.rows.length == 1) {
+        let button = table.rows[0].querySelector('button');
+        button.setAttribute('disabled', true);
+    }
 }
 
 function ticker_value(el, ticker) {
@@ -82,12 +93,12 @@ function ticker_value(el, ticker) {
         }
         let tr = el.parentElement.parentElement;
         price_input = tr.querySelectorAll('input')[2];
-        $(el).tooltip({trigger: 'manual'}).tooltip('hide');
+        $(el).tooltip({ trigger: 'manual' }).tooltip('hide');
         price_input.value = data;
 
     });
 }
 
 function invalid_ticker(el) {
-    $(el).tooltip({trigger: 'manual'}).tooltip('show');
+    $(el).tooltip({ trigger: 'manual' }).tooltip('show');
 }

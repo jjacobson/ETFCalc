@@ -34,7 +34,7 @@ def _is_etf(data):
     return data.loc['ETF']
 
 def _get_etf_data(ticker, data, holdings):
-    response = _make_request(ticker)
+    response = _get_etf_page(ticker)
     if not _valid_request(response):
         print('Failed to get holdings for ticker ', ticker)
         return
@@ -43,14 +43,14 @@ def _get_etf_data(ticker, data, holdings):
     title = data.loc['Security Name']
     
     url = _get_holdings_url(page_content)
-    holdings_json = requests.get(url + str(0), hooks={'response' : _throttle_hook(0.5)}).json()
+    holdings_json = _make_request(url + str(0)).json()
     rows = holdings_json['total']
     # etfdb limits us to 15 tickers per page
     for i in range(0, rows, 15):
         for entry in holdings_json['rows']:
             holding = _get_etf_holding(entry)
             holdings.append(holding)
-        holdings_json = requests.get(url + str(i + 15), hooks={'response' : _throttle_hook(0.5)}).json()
+        holdings_json = _make_request(url + str(i + 15)).json()
 
 # returns response hook function which sleeps for
 # timeout if the response is not yet cached
@@ -66,9 +66,12 @@ def _get_stock_data(ticker, data, holdings):
     holding = Holding(title, ticker)
     holdings.append(holding)
 
-def _make_request(ticker):
+def _get_etf_page(ticker):
     url = 'http://etfdb.com/etf/' + ticker + '/'
     return requests.get(url, allow_redirects=False)
+
+def _make_request(url):
+    return requests.get(url, hooks={'response' : _throttle_hook(0.5)})
 
 def _valid_request(response):
     return response.status_code == requests.codes.ok
