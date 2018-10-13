@@ -18,9 +18,9 @@ def get_holdings(portfolio):
             if not underlying in data:
                 holding.set_weight(_round_weight(weight))
                 data[underlying] = holding
-                continue
-            previous_weight = data[underlying].get_weight()
-            data[underlying].set_weight(_round_weight(previous_weight + weight))
+            else:
+                previous_weight = data[underlying].get_weight()
+                data[underlying].set_weight(_round_weight(previous_weight + weight))
     return list(data.values())
 
 def get_price(ticker):

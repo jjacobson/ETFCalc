@@ -14,7 +14,7 @@ def scrape_ticker(ticker):
     # invalid ticker
     if data is None:
         return holdings
-    
+
     if _is_etf(data):
         _get_etf_data(ticker, data, holdings)
     else:
@@ -29,7 +29,7 @@ def get_data(ticker):
     except KeyError:
         print('Failed to get data for ticker ', ticker)
     return data
- 
+
 def _is_etf(data):
     return data.loc['ETF']
 
@@ -41,7 +41,7 @@ def _get_etf_data(ticker, data, holdings):
 
     page_content = response.content
     title = data.loc['Security Name']
-    
+
     url = _get_holdings_url(page_content)
     holdings_json = _make_request(url + str(0)).json()
     rows = holdings_json['total']
@@ -52,6 +52,18 @@ def _get_etf_data(ticker, data, holdings):
             holdings.append(holding)
         holdings_json = _make_request(url + str(i + 15)).json()
 
+def _get_stock_data(ticker, data, holdings):
+    title = data.loc['Security Name']
+    holding = Holding(title, ticker)
+    holdings.append(holding)
+
+def _get_etf_page(ticker):
+    url = 'http://etfdb.com/etf/' + ticker + '/'
+    return _make_request(url, False)
+
+def _make_request(url, redirects = True):
+    return requests.get(url, hooks={'response': _throttle_hook(0.5)}, allow_redirects=redirects)
+
 # returns response hook function which sleeps for
 # timeout if the response is not yet cached
 def _throttle_hook(timeout):
@@ -61,17 +73,6 @@ def _throttle_hook(timeout):
         return response
     return hook
 
-def _get_stock_data(ticker, data, holdings):
-    title = data.loc['Security Name']
-    holding = Holding(title, ticker)
-    holdings.append(holding)
-
-def _get_etf_page(ticker):
-    url = 'http://etfdb.com/etf/' + ticker + '/'
-    return requests.get(url, allow_redirects=False)
-
-def _make_request(url):
-    return requests.get(url, hooks={'response' : _throttle_hook(0.5)})
 
 def _valid_request(response):
     return response.status_code == requests.codes.ok
