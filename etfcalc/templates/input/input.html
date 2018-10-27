@@ -29,6 +29,16 @@
 </template>
 
 <div class="row py-5">
+
+    {% if error %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Oops!</strong> There was an error processing your request. Please try again later.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
+
     <form action="{{ url_for('output') }}" method="post" id="portfolio">
         <table class="table table-md">
             <thead>

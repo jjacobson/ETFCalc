@@ -1,3 +1,4 @@
+import logging
 from flask import Flask, render_template, request
 from operator import attrgetter
 from .util import holdings_calculator
@@ -7,8 +8,8 @@ from .util.portfolio import Portfolio
 app = Flask(__name__)
 
 @app.route('/')
-def main():
-    return render_template('input/input.html')
+def main(error=False):
+    return render_template('input/input.html', error=error)
 
 @app.route('/output', methods=['POST'])
 def output():
@@ -25,7 +26,11 @@ def output():
         portfolio.set_price(ticker.upper(), float(price))
 
     if portfolio.get_holdings():
-        data = holdings_calculator.get_holdings(portfolio)
+        try:
+            data = holdings_calculator.get_holdings(portfolio)
+        except ValueError as e:
+            logging.exception('Raised exception while making request')
+            return main(True)
         data.sort(key=attrgetter('weight'), reverse=True)
     else:
         data = {}
@@ -37,7 +42,7 @@ def ticker_value():
     ticker = request.form['ticker']
     ticker = ticker.upper()
     if (webscraper.get_data(ticker) is None):
-        print('invalid ticker, ignoring', ticker)
+        logging.info('invalid ticker, ignoring', ticker)
         return 'null'
 
     price = holdings_calculator.get_price(ticker)

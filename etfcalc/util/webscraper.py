@@ -1,4 +1,4 @@
-import requests, json, requests_cache, time
+import requests, json, requests_cache, time, logging
 from pyquery import PyQuery
 from pandas_datareader.nasdaq_trader import get_nasdaq_symbols
 from .holding import Holding
@@ -27,7 +27,7 @@ def get_data(ticker):
     try:
         data = symbols.loc[ticker]
     except KeyError:
-        print('Failed to get data for ticker ', ticker)
+        logging.info('Failed to get data for ticker ', ticker)
     return data
 
 def _is_etf(data):
@@ -36,7 +36,7 @@ def _is_etf(data):
 def _get_etf_data(ticker, data, holdings):
     response = _get_etf_page(ticker)
     if not _valid_request(response):
-        print('Failed to get holdings for ticker ', ticker)
+        logging.warning('Failed to get holdings for ticker ', ticker)
         return
 
     page_content = response.content
@@ -58,11 +58,17 @@ def _get_stock_data(ticker, data, holdings):
     holdings.append(holding)
 
 def _get_etf_page(ticker):
-    url = 'http://etfdb.com/etf/' + ticker + '/'
+    url = 'https://etfdb.com/etf/' + ticker + '/'
     return _make_request(url, False)
 
 def _make_request(url, redirects = True):
-    return requests.get(url, hooks={'response': _throttle_hook(0.5)}, allow_redirects=redirects)
+    response = None
+    try:
+        response = requests.get(url, hooks={'response': _throttle_hook(0.5)}, allow_redirects=redirects, timeout=1)
+    except requests.exceptions.RequestException as e:
+        raise ValueError('ETF scraping exception') from e
+
+    return response
 
 # returns response hook function which sleeps for
 # timeout if the response is not yet cached
