@@ -1,10 +1,12 @@
 import requests, json, requests_cache, time, logging
+from datetime import timedelta
 from pyquery import PyQuery
 from pandas_datareader.nasdaq_trader import get_nasdaq_symbols
 from .holding import Holding
 
 symbols = get_nasdaq_symbols()
-requests_cache.install_cache('cache_data')
+expire_after = timedelta(days=7)
+requests_cache.install_cache('cache_data', expire_after=expire_after)
 
 # Scrape name and holdings if any for a given ticker
 def scrape_ticker(ticker):
