@@ -76,6 +76,9 @@ function ticker_value(el, ticker) {
     if (!ticker) {
         return;
     }
+    let tr = el.parentElement.parentElement;
+    let spinner = tr.querySelector('.spinner');
+    spinner.classList.remove('hidden');
     $.ajax({
         data: {
             ticker: ticker
@@ -83,6 +86,7 @@ function ticker_value(el, ticker) {
         type: 'POST',
         url: '/ticker_value'
     }).done(function (data) {
+        spinner.classList.add('hidden');
         if (data.error) {
             console.log('Error fetching price data', data.error);
             return;
@@ -91,8 +95,7 @@ function ticker_value(el, ticker) {
             invalid_ticker(el, ticker);
             return;
         }
-        let tr = el.parentElement.parentElement;
-        price_input = tr.querySelectorAll('input')[2];
+        let price_input = tr.querySelectorAll('input')[2];
         $(el).tooltip({ trigger: 'manual' }).tooltip('hide');
         price_input.value = data;
 
