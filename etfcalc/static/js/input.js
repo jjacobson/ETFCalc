@@ -62,7 +62,7 @@ function add_row() {
 function remove_row(el) {
     let tr = el.parentElement.parentElement;
     let table = document.getElementById('holding-table');
-    
+
     $(tr.querySelectorAll('input')[0]).tooltip({ trigger: 'manual' }).tooltip('hide');
     tr.parentElement.removeChild(tr);
 

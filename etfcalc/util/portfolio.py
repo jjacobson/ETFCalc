@@ -6,7 +6,7 @@ class Portfolio(object):
 
     def get_holdings(self):
         return self.holdings
-    
+
     def get_tickers(self):
         return list(self.holdings.keys())
 

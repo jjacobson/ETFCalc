@@ -83,14 +83,14 @@ def _get_etf_data_backup(ticker, data, holdings):
     title = data.loc['Security Name']
 
     url = _get_holdings_url(page_content)
-    holdings_json = _make_request(url + str(0), throttle=0.5).json()
+    holdings_json = _make_request(url + str(0)).json()
     rows = holdings_json['total']
     # etfdb limits us to 15 tickers per page
     for i in range(0, rows, 15):
         for entry in holdings_json['rows']:
             holding = _get_etf_holding(entry)
             holdings.append(holding)
-        holdings_json = _make_request(url + str(i + 15), throttle=0.5).json()
+        holdings_json = _make_request(url + str(i + 15), throttle=0.7).json()
 
 
 def _get_stock_data(ticker, data, holdings):

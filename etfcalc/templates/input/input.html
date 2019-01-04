@@ -31,12 +31,12 @@
 <div class="row py-5">
 
     {% if error %}
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Oops!</strong> There was an error processing your request. Please try again later.
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Oops!</strong> There was an error processing your request. Please try again later.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
     {% endif %}
 
     <form action="{{ url_for('output') }}" method="post" id="portfolio">
@@ -53,6 +53,7 @@
         </table>
     </form>
 </div>
+
 <div class="row float-right mr-1">
     <button type="button" class="btn btn-secondary mr-1" onclick="add_row()">Add</button>
     <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#processing" form="portfolio"

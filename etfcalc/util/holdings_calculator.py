@@ -5,6 +5,7 @@ from .webscraper import scrape_ticker
 from .holding import Holding
 from .portfolio import Portfolio
 
+
 def get_holdings(portfolio):
     data = {}
     total = _get_total(portfolio)
@@ -20,14 +21,17 @@ def get_holdings(portfolio):
                 data[underlying] = holding
             else:
                 previous_weight = data[underlying].get_weight()
-                data[underlying].set_weight(_round_weight(previous_weight + weight))
+                data[underlying].set_weight(
+                    _round_weight(previous_weight + weight))
     return list(data.values())
+
 
 def get_price(ticker):
     weekday = _last_weekday()
     with requests_cache.disabled():
         data = get_data_yahoo(ticker, weekday, weekday)
     return _round_price(data.iloc[0]['Close'])
+
 
 def _get_total(portfolio):
     total = 0
@@ -36,11 +40,13 @@ def _get_total(portfolio):
         total += shares * price
     return total
 
+
 def _get_prices(portfolio):
     tickers = portfolio.get_tickers()
     weekday = _last_weekday()
     data = get_data_yahoo(tickers, weekday, weekday)
     return data.iloc[0]['Close']
+
 
 def _last_weekday():
     weekday = date.today() - timedelta(days=1)
@@ -48,8 +54,10 @@ def _last_weekday():
         weekday -= timedelta(days=1)
     return weekday
 
+
 def _round_weight(weight):
     return round(weight, 3)
+
 
 def _round_price(price):
     return round(price, 2)
