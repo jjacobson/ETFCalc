@@ -60,13 +60,6 @@ def _round_price(price):
     return round(price, 2)
 
 
-def _last_weekday():
-    weekday = date.today() - timedelta(days=1)
-    while weekday.weekday() > 4:
-        weekday -= timedelta(days=1)
-    return weekday
-
-
 def _is_etf(data):
     return data.loc['ETF']
 
