@@ -45,5 +45,5 @@ def ticker_value():
         logging.info('invalid ticker, ignoring', ticker)
         return 'null'
 
-    price = holdings_calculator.get_price(ticker)
+    price = webscraper.get_price(ticker)
     return str(price)

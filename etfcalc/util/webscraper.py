@@ -3,7 +3,7 @@ import json
 import requests_cache
 import time
 import logging
-from datetime import timedelta
+from datetime import date, timedelta
 from pyquery import PyQuery
 from pandas_datareader.nasdaq_trader import get_nasdaq_symbols
 from .holding import Holding
@@ -35,6 +35,36 @@ def get_data(ticker):
     except KeyError:
         logging.info('Failed to get data for ticker ', ticker)
     return data
+
+# Get latest price for a given ticker
+def get_price(ticker):
+    with requests_cache.disabled():
+        quote = _get_stock_quote([ticker])
+    return _round_price(quote[ticker]['quote']['latestPrice'])
+
+
+def get_stocks_sectors(tickers):
+    sectors = {}
+    for i in range(0, len(tickers), 100):
+        subset = tickers[i:i+100]
+        data = _get_stock_quote(subset)
+        for ticker, stock in data.items():
+            quote = stock['quote']
+            if quote is None:
+                continue
+            sectors[ticker] = quote['sector']
+    return sectors
+
+
+def _round_price(price):
+    return round(price, 2)
+
+
+def _last_weekday():
+    weekday = date.today() - timedelta(days=1)
+    while weekday.weekday() > 4:
+        weekday -= timedelta(days=1)
+    return weekday
 
 
 def _is_etf(data):
@@ -100,13 +130,19 @@ def _get_stock_data(ticker, data, holdings):
 
 
 def _get_etf_page(ticker):
-    url = 'https://etfdailynews.com/etf/' + ticker + '/'
+    url = 'https://etfdailynews.com/etf/{0}/'.format(ticker)
     return _make_request(url, redirects=False)
 
 
 def _get_etf_page_backup(ticker):
-    url = 'https://etfdb.com/etf/' + ticker + '/'
+    url = 'https://etfdb.com/etf/{0}/'.format(ticker)
     return _make_request(url, redirects=False)
+
+
+def _get_stock_quote(tickers):
+    tickers = ",".join(tickers)
+    url = 'https://api.iextrading.com/1.0/stock/market/batch?symbols={0}&types=quote'.format(tickers)
+    return _make_request(url, redirects=False).json()
 
 
 def _make_request(url, redirects=True, throttle=0.0):
@@ -115,7 +151,7 @@ def _make_request(url, redirects=True, throttle=0.0):
         response = requests.get(url, hooks={'response': _throttle_hook(
             throttle)}, allow_redirects=redirects, timeout=3)
     except requests.exceptions.RequestException as e:
-        raise ValueError('ETF scraping exception') from e
+        raise ValueError('Request exception') from e
     return response
 
 # returns response hook function which sleeps for

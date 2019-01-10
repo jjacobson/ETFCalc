@@ -1,7 +1,5 @@
 import requests_cache
-from pandas_datareader.data import get_data_yahoo
-from datetime import date, timedelta
-from .webscraper import scrape_ticker
+from .webscraper import scrape_ticker, get_stocks_sectors
 from .holding import Holding
 from .portfolio import Portfolio
 
@@ -23,14 +21,8 @@ def get_holdings(portfolio):
                 previous_weight = data[underlying].get_weight()
                 data[underlying].set_weight(
                     _round_weight(previous_weight + weight))
+    print('sector list: ', get_stocks_sectors(list(data.keys())))
     return list(data.values())
-
-
-def get_price(ticker):
-    weekday = _last_weekday()
-    with requests_cache.disabled():
-        data = get_data_yahoo(ticker, weekday, weekday)
-    return _round_price(data.iloc[0]['Close'])
 
 
 def _get_total(portfolio):
@@ -41,23 +33,8 @@ def _get_total(portfolio):
     return total
 
 
-def _get_prices(portfolio):
-    tickers = portfolio.get_tickers()
-    weekday = _last_weekday()
-    data = get_data_yahoo(tickers, weekday, weekday)
-    return data.iloc[0]['Close']
-
-
-def _last_weekday():
-    weekday = date.today() - timedelta(days=1)
-    while weekday.weekday():
-        weekday -= timedelta(days=1)
-    return weekday
-
-
 def _round_weight(weight):
     return round(weight, 3)
 
 
-def _round_price(price):
-    return round(price, 2)
+
