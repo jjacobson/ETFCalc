@@ -39,15 +39,15 @@ def get_data(ticker):
 # Get latest price for a given ticker
 def get_price(ticker):
     with requests_cache.disabled():
-        quote = _get_stock_quote([ticker])
-    return _round_price(quote[ticker]['quote']['latestPrice'])
+        quote = _get_iex_data([ticker], ['price'])
+    return _round_price(quote[ticker]['price'])
 
 
 def get_stocks_sectors(tickers):
     sectors = {}
     for i in range(0, len(tickers), 100):
         subset = tickers[i:i+100]
-        data = _get_stock_quote(subset)
+        data = _get_iex_data(subset, ['quote'])
         for ticker, stock in data.items():
             quote = stock['quote']
             if quote is None:
@@ -132,9 +132,10 @@ def _get_etf_page_backup(ticker):
     return _make_request(url, redirects=False)
 
 
-def _get_stock_quote(tickers):
+def _get_iex_data(tickers, options):
     tickers = ",".join(tickers)
-    url = 'https://api.iextrading.com/1.0/stock/market/batch?symbols={0}&types=quote'.format(tickers)
+    options = ",".join(options)
+    url = 'https://api.iextrading.com/1.0/stock/market/batch?symbols={0}&types={1}'.format(tickers, options)
     return _make_request(url, redirects=False).json()
 
 
