@@ -34,7 +34,7 @@ def output():
         data.sort(key=attrgetter('weight'), reverse=True)
     else:
         data = {}
-
+        
     return render_template('output/output.html', data=data)
 
 @app.route('/ticker_value', methods=['POST'])

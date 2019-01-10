@@ -21,7 +21,13 @@ def get_holdings(portfolio):
                 previous_weight = data[underlying].get_weight()
                 data[underlying].set_weight(
                     _round_weight(previous_weight + weight))
-    print('sector list: ', get_stocks_sectors(list(data.keys())))
+
+    sectors = get_stocks_sectors(list(data.keys()))
+    for ticker, holding in data.items():
+        sector = sectors.get(ticker)
+        if sector is None:
+            continue
+        holding.set_sector(sector)
     return list(data.values())
 
 
