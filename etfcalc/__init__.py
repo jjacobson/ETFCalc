@@ -1,6 +1,7 @@
 import logging
 from flask import Flask, render_template, request
 from operator import attrgetter
+from collections import defaultdict
 from .util import holdings_calculator
 from .util import webscraper
 from .util.portfolio import Portfolio
@@ -31,11 +32,17 @@ def output():
         except ValueError as e:
             logging.exception('Raised exception while making request')
             return main(True)
-        data.sort(key=attrgetter('weight'), reverse=True)
     else:
-        data = {}
-        
-    return render_template('output/output.html', data=data)
+        data = {}    
+    
+    sector_data = defaultdict(float)
+    for holding in data:
+        sector = holding.get_sector()
+        if sector is None:
+            continue
+        sector_data[sector] += holding.get_weight()
+
+    return render_template('output/output.html', data=data, sectors=sector_data)
 
 @app.route('/ticker_value', methods=['POST'])
 def ticker_value():

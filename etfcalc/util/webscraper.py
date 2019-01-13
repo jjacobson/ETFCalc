@@ -45,19 +45,17 @@ def get_price(ticker):
 
 def get_stocks_sectors(tickers):
     sectors = {}
-    for i in range(0, len(tickers), 100):
-        subset = tickers[i:i+100]
-        data = _get_iex_data(subset, ['quote'])
-        for ticker, stock in data.items():
-            quote = stock['quote']
-            if quote is None:
-                continue
-            sectors[ticker] = quote['sector']
+    data = _get_iex_data(tickers, ['quote'])
+    for ticker, stock in data.items():
+        quote = stock['quote']
+        if quote is None:
+            continue
+        sectors[ticker] = quote['sector']
     return sectors
 
 
 def _round_price(price):
-    return round(price, 2)
+    return format(price, '.2f')
 
 
 def _is_etf(data):
@@ -133,10 +131,14 @@ def _get_etf_page_backup(ticker):
 
 
 def _get_iex_data(tickers, options):
+    data = {}
     tickers = ",".join(tickers)
     options = ",".join(options)
-    url = 'https://api.iextrading.com/1.0/stock/market/batch?symbols={0}&types={1}'.format(tickers, options)
-    return _make_request(url, redirects=False).json()
+    for i in range(0, len(tickers), 100):
+        subset = tickers[i:i+100]
+        url = 'https://api.iextrading.com/1.0/stock/market/batch?symbols={0}&types={1}'.format(subset, options)
+        data.update(_make_request(url, redirects=False).json())
+    return data
 
 
 def _make_request(url, redirects=True, throttle=0.0):
