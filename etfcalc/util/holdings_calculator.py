@@ -15,12 +15,12 @@ def get_holdings(portfolio):
             underlying = holding.get_ticker()
             weight = float(holding.get_weight()) * ratio
             if not underlying in data:
-                holding.set_weight(_round_weight(weight))
+                holding.set_weight(round_weight(weight))
                 data[underlying] = holding
             else:
                 previous_weight = data[underlying].get_weight()
                 data[underlying].set_weight(
-                    _round_weight(previous_weight + weight))
+                    round_weight(previous_weight + weight))
 
     sectors = get_stocks_sectors(list(data.keys()))
     for ticker, holding in data.items():
@@ -31,16 +31,15 @@ def get_holdings(portfolio):
     return list(data.values())
 
 
+def round_weight(weight):
+    return round(weight, 3)
+
+
 def _get_total(portfolio):
     total = 0
     for ticker, shares in portfolio.get_holdings().items():
         price = portfolio.get_price(ticker)
         total += shares * price
     return total
-
-
-def _round_weight(weight):
-    return round(weight, 3)
-
 
 

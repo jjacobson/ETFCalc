@@ -1,4 +1,4 @@
-import logging
+import logging, json
 from flask import Flask, render_template, request
 from operator import attrgetter
 from collections import defaultdict
@@ -40,9 +40,11 @@ def output():
         sector = holding.get_sector()
         if sector is None:
             continue
-        sector_data[sector] += holding.get_weight()
+        current_weight = sector_data[sector]
+        weight = holdings_calculator.round_weight(current_weight + holding.get_weight())
+        sector_data[sector] = weight
 
-    return render_template('output/output.html', data=data, sectors=sector_data)
+    return render_template('output/output.html', data=data, sector_data=json.dumps(sector_data))
 
 @app.route('/ticker_value', methods=['POST'])
 def ticker_value():
