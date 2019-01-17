@@ -5,14 +5,14 @@ function back() {
 $(document).ready(function () {
     $('#output-table').DataTable({
         "order": [[3, "desc"]],
-        "pageLength": 25
+        "lengthMenu": [15, 25, 50, 100],
+        "pageLength": 15
     });
     let chart_data = $('#chart_data').data("charts");
     display_charts(chart_data)
 });
 
 function display_charts(chart_data) {
-    console.log(chart_data)
     let chart = new CanvasJS.Chart("chartContainer", {
         animationEnabled: true,
         backgroundColor: "transparent",

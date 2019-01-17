@@ -43,15 +43,33 @@ def get_price(ticker):
     return _round_price(quote[ticker]['price'])
 
 
-def get_stocks_sectors(tickers):
+def get_underlying_data(tickers):
+    return _get_iex_data(tickers, ['quote', 'news&last=3'])
+
+
+def get_stock_sectors(data):
     sectors = {}
-    data = _get_iex_data(tickers, ['quote'])
     for ticker, stock in data.items():
         quote = stock['quote']
         if quote is None:
             continue
         sectors[ticker] = quote['sector']
     return sectors
+
+
+def get_stock_news(data):
+    stock_news = {}
+    for ticker, stock in data.items():
+        news = stock['news']
+        if news is None:
+            continue
+        news_items = []
+        for news_item in news:
+            news_items.append({'title' : news_item['headline'], 'description' : news_item['summary'], 
+                'image_url' : _get_ticker_image(ticker), 'datetime' : news_item['datetime'],
+                'url' : news_item['url']})
+        stock_news[ticker] = news_items
+    return stock_news
 
 
 def _round_price(price):
@@ -128,6 +146,10 @@ def _get_etf_page(ticker):
 def _get_etf_page_backup(ticker):
     url = 'https://etfdb.com/etf/{0}/'.format(ticker)
     return _make_request(url, redirects=False)
+
+
+def _get_ticker_image(ticker):
+    return 'https://storage.googleapis.com/iex/api/logos/{0}.png'.format(ticker)
 
 
 def _get_iex_data(tickers, options):

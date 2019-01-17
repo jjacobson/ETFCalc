@@ -1,4 +1,6 @@
-import logging, json
+import logging
+import json
+import operator
 from flask import Flask, render_template, request
 from operator import attrgetter
 from collections import defaultdict
@@ -8,9 +10,11 @@ from .util.portfolio import Portfolio
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def main(error=False):
     return render_template('input/input.html', error=error)
+
 
 @app.route('/output', methods=['POST'])
 def output():
@@ -33,18 +37,34 @@ def output():
             logging.exception('Raised exception while making request')
             return main(True)
     else:
-        data = {}    
-    
+        data = {}
+
+    # sector data
     sector_data = defaultdict(float)
     for holding in data:
         sector = holding.get_sector()
         if sector is None:
             continue
         current_weight = sector_data[sector]
-        weight = holdings_calculator.round_weight(current_weight + holding.get_weight())
+        weight = holdings_calculator.round_weight(
+            current_weight + holding.get_weight())
         sector_data[sector] = weight
 
-    return render_template('output/output.html', data=data, sector_data=json.dumps(sector_data))
+    # news data
+    news_data = []
+    data.sort(key=attrgetter('weight'), reverse=True)
+    news_list = data[:15]
+    for holding in news_list:
+        news_items = holding.get_news()
+        if news_items is None:
+            continue
+        for news_item in news_items:
+            news_data.append(news_item)
+    news_data.sort(key=operator.itemgetter('datetime'))
+
+    return render_template('output/output.html', data=data, sector_data=json.dumps(sector_data), 
+        news_data=news_data)
+
 
 @app.route('/ticker_value', methods=['POST'])
 def ticker_value():

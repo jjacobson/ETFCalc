@@ -35,3 +35,23 @@
 .sp-divider {
     padding: .375rem .4rem;
 }
+
+.chart {
+   height: 300px;
+   margin-bottom: 3rem;
+   width: 100%;
+}
+
+.news {
+    width: 100%;
+}
+
+.news-item {
+    min-height: 7rem;
+}
+
+.logo {
+    width: 64px;
+    display: block;
+    margin: auto;
+}

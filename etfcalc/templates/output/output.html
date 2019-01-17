@@ -9,8 +9,11 @@
 <!--Proxy Tag for chart data-->
 <meta id="chart_data" data-charts="{{ sector_data }}">
 
-<div class="row py-5">
+<div class="row py-4">
     <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+</div>
+<hr>
+<div class="row py-4">
     <table class="table table-striped table-bordered table-sm" id="output-table">
         <thead>
             <tr>
@@ -31,6 +34,22 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
+<hr>
+<div class="row py-4">
+    <ul class="list-group news">
+        {% for news in news_data %}
+        <li class="list-group-item news-item">
+            <div class="media">
+                <img src="{{ news.image_url }}" class="mr-3 logo" alt="">
+                <div class="media-body">
+                    <a href="{{ news.url }}"><h6 class="mt-0">{{ news.title }}</h6></a>
+                    {{ news.description|truncate(256) }}
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
 </div>
 <div class="row pb-5">
     <button type="button" class="btn btn-secondary" onclick="back()">Back</button>

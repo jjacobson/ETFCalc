@@ -1,5 +1,5 @@
 import requests_cache
-from .webscraper import scrape_ticker, get_stocks_sectors
+from .webscraper import scrape_ticker, get_stock_sectors, get_stock_news, get_underlying_data
 from .holding import Holding
 from .portfolio import Portfolio
 
@@ -22,13 +22,21 @@ def get_holdings(portfolio):
                 data[underlying].set_weight(
                     round_weight(previous_weight + weight))
 
-    sectors = get_stocks_sectors(list(data.keys()))
+    handle_stock_data(data)
+    return list(data.values())
+
+
+def handle_stock_data(data):
+    stock_data = get_underlying_data(list(data.keys()))
+    sectors = get_stock_sectors(stock_data)
+    news = get_stock_news(stock_data)
     for ticker, holding in data.items():
         sector = sectors.get(ticker)
-        if sector is None:
-            continue
-        holding.set_sector(sector)
-    return list(data.values())
+        if sector is not None:
+            holding.set_sector(sector)
+        stock_news = news.get(ticker)
+        if stock_news is not None:
+            holding.set_news(stock_news)
 
 
 def round_weight(weight):
@@ -41,5 +49,3 @@ def _get_total(portfolio):
         price = portfolio.get_price(ticker)
         total += shares * price
     return total
-
-
