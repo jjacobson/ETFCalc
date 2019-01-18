@@ -59,7 +59,7 @@ def output():
             continue
         for news_item in news_items:
             news_data.append(news_item)
-    news_data.sort(key=operator.itemgetter('datetime'))
+    news_data.sort(key=operator.itemgetter('datetime'), reverse=True)
 
     return render_template('output/output.html', data=data, sector_data=json.dumps(sector_data), 
         news_data=news_data)
