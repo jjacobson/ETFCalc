@@ -41,24 +41,23 @@ def get_price(ticker):
     with requests_cache.disabled():
         quote = _get_iex_data([ticker], ['price'])
     return _round_price(quote[ticker]['price'])
+    
 
-
-def get_underlying_data(tickers):
-    return _get_iex_data(tickers, ['quote', 'news&last=3'])
-
-
-def get_stock_sectors(data):
+def get_stock_sectors(tickers):
     sectors = {}
+    data = _get_iex_data(tickers, ['company'])
     for ticker, stock in data.items():
-        quote = stock['quote']
+        quote = stock['company']
         if quote is None:
             continue
         sectors[ticker] = quote['sector']
     return sectors
 
 
-def get_stock_news(data):
+def get_stock_news(tickers):
     stock_news = {}
+    with requests_cache.disabled():
+        data = _get_iex_data(tickers, ['news&last=5'])
     for ticker, stock in data.items():
         news = stock['news']
         if news is None:

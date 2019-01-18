@@ -2,7 +2,7 @@ import logging
 import json
 import operator
 from flask import Flask, render_template, request
-from operator import attrgetter
+from operator import itemgetter
 from collections import defaultdict
 from .util import holdings_calculator
 from .util import webscraper
@@ -52,7 +52,6 @@ def output():
 
     # news data
     news_data = []
-    data.sort(key=attrgetter('weight'), reverse=True)
     news_list = data[:15]
     for holding in news_list:
         news_items = holding.get_news()
