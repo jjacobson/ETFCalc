@@ -3,7 +3,7 @@ import json
 import requests_cache
 import time
 import logging
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from pyquery import PyQuery
 from pandas_datareader.nasdaq_trader import get_nasdaq_symbols
 from .holding import Holding
@@ -41,7 +41,7 @@ def get_price(ticker):
     with requests_cache.disabled():
         quote = _get_iex_data([ticker], ['price'])
     return _round_price(quote[ticker]['price'])
-    
+
 
 def get_stock_sectors(tickers):
     sectors = {}
@@ -65,8 +65,8 @@ def get_stock_news(tickers):
         news_items = []
         for news_item in news:
             news_items.append({'title' : news_item['headline'], 'description' : news_item['summary'], 
-                'image_url' : _get_ticker_image(ticker), 'datetime' : news_item['datetime'],
-                'url' : news_item['url']})
+                'image_url' : _get_ticker_image(ticker), 'datetime' : _convert_time(news_item['datetime']),
+                'url' : news_item['url'], 'source' : news_item['source']})
         stock_news[ticker] = news_items
     return stock_news
 
@@ -77,6 +77,11 @@ def _round_price(price):
 
 def _is_etf(data):
     return data.loc['ETF']
+
+
+def _convert_time(timestamp):
+    timestamp = timestamp.replace('T', ' ')
+    return datetime.fromisoformat(timestamp).replace(tzinfo=None)
 
 
 def _get_etf_data(ticker, data, holdings):

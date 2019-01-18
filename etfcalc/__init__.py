@@ -4,9 +4,11 @@ import operator
 from flask import Flask, render_template, request
 from operator import itemgetter
 from collections import defaultdict
+from datetime import datetime
 from .util import holdings_calculator
 from .util import webscraper
 from .util.portfolio import Portfolio
+from .util.dateformatter import pretty_date
 
 app = Flask(__name__)
 
@@ -75,3 +77,8 @@ def ticker_value():
 
     price = webscraper.get_price(ticker)
     return str(price)
+
+
+@app.template_filter('strftime')
+def _jinja2_filter_datetime(date, fmt=None):
+    return pretty_date(date) 
