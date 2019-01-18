@@ -81,7 +81,7 @@ def _is_etf(data):
 
 def _convert_time(timestamp):
     timestamp = timestamp.replace('T', ' ')
-    return datetime.fromisoformat(timestamp).replace(tzinfo=None)
+    return datetime.fromisoformat(timestamp)
 
 
 def _get_etf_data(ticker, data, holdings):

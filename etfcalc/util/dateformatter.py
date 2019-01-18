@@ -1,18 +1,14 @@
+from datetime import datetime, timezone
+
 def pretty_date(time=False):
     """
     Get a datetime object or a int() Epoch timestamp and return a
     pretty string like 'an hour ago', 'Yesterday', '3 months ago',
     'just now', etc
-    Sourced from: https://stackoverflow.com/a/1551394
+    Modified version of post at: https://stackoverflow.com/a/1551394
     """
-    from datetime import datetime
-    now = datetime.now()
-    if type(time) is int:
-        diff = now - datetime.fromtimestamp(time)
-    elif isinstance(time,datetime):
-        diff = now - time
-    elif not time:
-        diff = now - now
+    now = datetime.now(time.tzinfo)
+    diff = now - time
     second_diff = diff.seconds
     day_diff = diff.days
 
