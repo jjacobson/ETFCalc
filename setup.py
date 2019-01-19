@@ -8,5 +8,6 @@ setup(
         'flask',
         'pandas_datareader',
         'pyquery',
+        'requests_cache'
     ],
 )
