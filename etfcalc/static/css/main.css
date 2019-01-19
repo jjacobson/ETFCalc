@@ -22,6 +22,10 @@
     visibility: hidden;
 }
 
+.gone {
+    display: none;
+}
+
 .no-spinner::-webkit-outer-spin-button,
 .no-spinner::-webkit-inner-spin-button {
     -webkit-appearance: none;

@@ -1,6 +1,4 @@
-import logging
-import json
-import operator
+import logging, json, operator
 from flask import Flask, render_template, request
 from operator import itemgetter
 from collections import defaultdict
@@ -54,13 +52,19 @@ def output():
 
     # news data
     news_data = []
+    urls = [] 
     news_list = data[:15]
     for holding in news_list:
         news_items = holding.get_news()
         if news_items is None:
             continue
         for news_item in news_items:
+            url = news_item['url']
+            # only display unique articles
+            if url in urls:
+                continue
             news_data.append(news_item)
+            urls.append(url)
     news_data.sort(key=operator.itemgetter('datetime'), reverse=True)
 
     return render_template('output/output.html', data=data, sector_data=json.dumps(sector_data), 

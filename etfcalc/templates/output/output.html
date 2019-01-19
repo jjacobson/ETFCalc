@@ -37,9 +37,9 @@
 </div>
 <hr>
 <div class="row py-4">
-    <ul class="list-group news">
+    <ul class="list-group news" id='news'>
         {% for news in news_data %}
-        <li class="list-group-item news-item">
+        <li class="list-group-item news-item gone">
             <div class="media">
                 <img src="{{ news.image_url }}" class="mr-3 logo" alt="">
                 <div class="media-body">

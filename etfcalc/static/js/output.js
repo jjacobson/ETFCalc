@@ -1,6 +1,6 @@
-function back() {
-    window.location.replace('/');
-}
+document.addEventListener('DOMContentLoaded', function () {
+    load_news_section();
+});
 
 $(document).ready(function () {
     $('#output-table').DataTable({
@@ -37,4 +37,24 @@ function get_data_points(chart_data) {
         data_points.push({ y: value, label: row });
     }
     return data_points;
+}
+
+function load_news_section() {
+    let count = 5;
+    let news = document.getElementById('news');
+    for (i = 0; i < news.children.length, count != 0; i++) {
+        let news_item = news.children[i];
+        if (!news_item) {
+            break;
+        }
+        if (!news_item.classList.contains('gone')) {
+            continue;
+        }
+        news_item.classList.remove('gone');
+        count -= 1;
+    }
+}
+
+function back() {
+    window.location.replace('/');
 }

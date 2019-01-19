@@ -158,10 +158,9 @@ def _get_ticker_image(ticker):
 
 def _get_iex_data(tickers, options):
     data = {}
-    tickers = ",".join(tickers)
     options = ",".join(options)
     for i in range(0, len(tickers), 100):
-        subset = tickers[i:i+100]
+        subset = ",".join(tickers[i:i+100])
         url = 'https://api.iextrading.com/1.0/stock/market/batch?symbols={0}&types={1}'.format(subset, options)
         data.update(_make_request(url, redirects=False).json())
     return data
