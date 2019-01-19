@@ -1,4 +1,6 @@
-import logging, json, operator
+import logging
+import json
+import operator
 from flask import Flask, render_template, request
 from operator import itemgetter
 from collections import defaultdict
@@ -52,8 +54,8 @@ def output():
 
     # news data
     news_data = []
-    urls = [] 
-    news_list = data[:15]
+    urls = []
+    news_list = data[:25]
     for holding in news_list:
         news_items = holding.get_news()
         if news_items is None:
@@ -67,8 +69,8 @@ def output():
             urls.append(url)
     news_data.sort(key=operator.itemgetter('datetime'), reverse=True)
 
-    return render_template('output/output.html', data=data, sector_data=json.dumps(sector_data), 
-        news_data=news_data)
+    return render_template('output/output.html', data=data, sector_data=json.dumps(sector_data),
+                           news_data=news_data)
 
 
 @app.route('/ticker_value', methods=['POST'])
@@ -85,4 +87,4 @@ def ticker_value():
 
 @app.template_filter('strftime')
 def _jinja2_filter_datetime(date, fmt=None):
-    return pretty_date(date) 
+    return pretty_date(date)
