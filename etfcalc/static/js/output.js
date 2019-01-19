@@ -45,6 +45,7 @@ function load_news_section() {
     for (i = 0; i < news.children.length, count != 0; i++) {
         let news_item = news.children[i];
         if (!news_item) {
+            disable_news_btn();
             break;
         }
         if (!news_item.classList.contains('gone')) {
@@ -52,7 +53,15 @@ function load_news_section() {
         }
         news_item.classList.remove('gone');
         count -= 1;
+        if (i == news.children.length - 1) {
+            disable_news_btn();
+        }
     }
+}
+
+function disable_news_btn() {
+    let btn = document.getElementById('btn-news');
+    btn.disabled = true;
 }
 
 function back() {

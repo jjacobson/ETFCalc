@@ -44,7 +44,9 @@
                 <img src="{{ news.image_url }}" class="mr-3 logo" alt="">
                 <div class="media-body">
                     <span class="source text-muted">{{ news.source }} &vert; {{ news.datetime|strftime }}</span>
-                    <a href="{{ news.url }}"><h6 class="mt-0">{{ news.title }}</h6></a>
+                    <a href="{{ news.url }}">
+                        <h6 class="mt-0">{{ news.title }}</h6>
+                    </a>
                     {{ news.description|truncate(170) }}
                 </div>
             </div>
@@ -54,5 +56,8 @@
 </div>
 <div class="row pb-5">
     <button type="button" class="btn btn-secondary" onclick="back()">Back</button>
+    <div class="col text-center">
+        <button type="button" class="btn btn-outline-secondary" id="btn-news" onclick="load_news_section()">More News</button>
+    </div>
 </div>
 {% endblock %}
