@@ -1,6 +1,6 @@
 import requests_cache
 from operator import attrgetter
-from .webscraper import scrape_ticker, get_stock_sectors, get_stock_news
+from .webscraper import scrape_ticker, get_company_data, get_stock_news
 from .holding import Holding
 from .portfolio import Portfolio
 
@@ -31,12 +31,19 @@ def get_holdings(portfolio):
 
 def handle_stock_data(holdings):
     tickers = [holding.ticker for holding in holdings]
-    sectors = get_stock_sectors(tickers)
+    company_data = get_company_data(tickers)
     news = get_stock_news(tickers[:50])
     for holding in holdings:
-        sector = sectors.get(holding.get_ticker())
-        if sector is not None:
-            holding.set_sector(sector)
+        ticker = holding.get_ticker()
+        if ticker in company_data:
+            company = company_data[holding.get_ticker()]
+        if company is not None:
+            # use iex names if available (they look better)
+            name = company['name']
+            if name is not None:
+                holding.set_name(name)
+            holding.set_sector(company['sector'])
+            holding.set_link(company['link'])
         stock_news = news.get(holding.get_ticker())
         if stock_news is not None:
             holding.set_news(stock_news)

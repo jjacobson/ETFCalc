@@ -43,15 +43,15 @@ def get_price(ticker):
     return _round_price(quote[ticker]['price'])
 
 
-def get_stock_sectors(tickers):
-    sectors = {}
+def get_company_data(tickers):
+    company_data = {}
     data = _get_iex_data(tickers, ['company'])
     for ticker, stock in data.items():
         quote = stock['company']
         if quote is None:
             continue
-        sectors[ticker] = quote['sector']
-    return sectors
+        company_data[ticker] = {'name' : quote['companyName'], 'sector' : quote['sector'], 'link' : quote['website']}
+    return company_data
 
 
 def get_stock_news(tickers):

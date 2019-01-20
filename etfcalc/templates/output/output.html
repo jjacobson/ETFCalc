@@ -26,7 +26,7 @@
         <tbody>
             {% for holding in data %}
             <tr>
-                <td class="c2">{{ holding.name }}</td>
+                <td class="c2"><a href="{{ holding.link }}">{{ holding.name }}</a></td>
                 <td class="c2">{{ holding.ticker }}</td>
                 <td class="c2">{{ holding.sector }}</td>
                 <td class="c2">{{ holding.weight }}%</td>
