@@ -12,7 +12,7 @@
                 data-placement="left" title="Price not found">
         </td>
         <td>
-            <input type="number" class="form-control" placeholder="0" name="shares">
+            <input type="number" class="form-control" placeholder="0" min="0" name="shares">
         </td>
         <td>
             <div class="input-group">
@@ -64,7 +64,7 @@
 <div class="row float-right mr-1 pb-5">
     <button type="button" class="btn btn-secondary mr-1" onclick="add_row()">Add</button>
     <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#processing" form="portfolio"
-        onclick="save_data()">Calculate</button>
+        onclick="save_data()" id="submit" disabled>Calculate</button>
 </div>
 
 <div class="modal fade" id="processing" role="dialog">
