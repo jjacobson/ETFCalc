@@ -108,7 +108,7 @@ function ticker_value(el, ticker) {
         let price_input = tr.querySelectorAll('input')[2];
         $(el).tooltip({ trigger: 'manual' }).tooltip('hide');
         price_input.value = data;
-
+        validate_inputs();
     });
 }
 
@@ -133,5 +133,5 @@ function valid_row(row) {
     let ticker = row.querySelector('[name=tickers]').value;
     let shares = row.querySelector('[name=shares]').value;
     let price = row.querySelector('[name=prices]').value;
-    return (ticker && shares && price);
+    return (ticker && (shares > 0) && price);
 }
