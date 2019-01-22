@@ -27,7 +27,7 @@
 }
 
 .gone {
-    display: none;
+    display: none !important;
 }
 
 .no-spinner::-webkit-outer-spin-button,
@@ -44,10 +44,15 @@
     padding: .375rem .4rem;
 }
 
-.chart {
+.chart-sector {
    height: 300px;
    width: 100%;
 }
+
+.chart-stock {
+    height: 300px;
+    width: 100%;
+ } 
 
 .news {
     width: 100%;
@@ -65,4 +70,26 @@
 
 .source {
     font-size: 11px;
+}
+
+.holding-spinner {
+    width: 4rem; 
+    height: 4rem;
+    margin: 1.5rem;
+}
+
+.price-data {
+    width: 20%;
+}
+
+.latest-price {
+    font-size: 11px;
+}
+
+.oi-caret-top, .positive {
+    color: green;
+}
+
+.oi-caret-bottom, .negative {
+    color: red;
 }

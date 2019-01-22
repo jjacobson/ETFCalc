@@ -57,7 +57,7 @@ def get_company_data(tickers):
 def get_stock_news(tickers):
     stock_news = {}
     with requests_cache.disabled():
-        data = _get_iex_data(tickers, ['news&last=5'])
+        data = _get_iex_data(tickers, ['news'], ['last=5'])
     for ticker, stock in data.items():
         news = stock['news']
         if news is None:
@@ -69,6 +69,13 @@ def get_stock_news(tickers):
                 'url' : news_item['url'], 'source' : news_item['source']})
         stock_news[ticker] = news_items
     return stock_news
+
+
+def get_holding_data(ticker):
+    holding_data = {}
+    with requests_cache.disabled():
+        data = _get_iex_data([ticker], ['quote', 'chart'], ['displayPercent=true', 'range=1y'])
+    return data
 
 
 def _round_price(price):
@@ -156,9 +163,11 @@ def _get_ticker_image(ticker):
     return 'https://storage.googleapis.com/iex/api/logos/{0}.png'.format(ticker)
 
 
-def _get_iex_data(tickers, options):
+def _get_iex_data(tickers, options, settings=None):
     data = {}
     options = ",".join(options)
+    if settings:
+        options = options + ("&" + "&".join(settings))
     for i in range(0, len(tickers), 100):
         subset = ",".join(tickers[i:i+100])
         url = 'https://api.iextrading.com/1.0/stock/market/batch?symbols={0}&types={1}'.format(subset, options)

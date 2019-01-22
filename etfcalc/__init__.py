@@ -90,6 +90,17 @@ def ticker_value():
     return str(price)
 
 
+@app.route('/holding_data', methods=['POST'])
+def holding_data():
+    ticker = request.form['ticker']
+    ticker = ticker.upper()
+    if (webscraper.get_data(ticker) is None):
+        logging.info('invalid ticker, ignoring', ticker)
+        return 'null'
+
+    data = webscraper.get_holding_data(ticker)
+    return json.dumps(data)
+
 @app.template_filter('strftime')
 def _jinja2_filter_datetime(date, fmt=None):
     return pretty_date(date)

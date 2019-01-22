@@ -10,11 +10,11 @@
 <meta id="chart_data" data-charts="{{ sector_data }}">
 
 <div class="row py-4">
-    <div id="chartContainer" class="chart"></div>
+    <div id="chart-sector" class="chart-sector"></div>
 </div>
 <hr>
 <div class="row py-4">
-    <table class="table table-striped table-bordered table-sm" id="output-table">
+    <table class="table table-striped table-bordered table-sm table-hover" id="output-table">
         <thead>
             <tr>
                 <th>Name</th>
@@ -58,6 +58,46 @@
     <button type="button" class="btn btn-secondary" onclick="back()">Back</button>
     <div class="col text-center">
         <button type="button" class="btn btn-outline-secondary" id="btn-news" onclick="load_news_section()">More News</button>
+    </div>
+</div>
+<div class="modal fade" id="holding-data" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex justify-content-center" id="spinner">
+                    <div class="spinner-border holding-spinner" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+                <div id="modal-data" class="gone">
+                    <div class="col text-center price-data">
+                        <div class="row">
+                            <h4 class="w-100">$<strong id="price"></strong></h4>
+                        </div>
+                        <div class="row">
+                            <h6 class="w-100" id="change-header">
+                                <span class="oi oi-caret-top caret gone" aria-hidden="true"></span>
+                                <span class="oi oi-caret-bottom caret gone" aria-hidden="true"></span>
+                                <span id="change"></span>
+                            </h6>
+                        </div>
+                        <div class="row">
+                            <span class="latest-price text-muted w-100" id="date"></span>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="pb-2">
+                        <div id="chart-stock" class="chart-stock"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
