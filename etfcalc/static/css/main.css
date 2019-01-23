@@ -97,3 +97,16 @@
 .oi-caret-bottom, .negative {
     color: red;
 }
+
+.tooltip-left {
+    padding-right: 1rem;
+}
+
+.tooltip-hr {
+    margin-top: 0.2rem;
+    margin-bottom: 0.2rem;
+}
+
+.tooltip-table {
+    line-height: 1.2;
+}

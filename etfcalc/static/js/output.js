@@ -137,20 +137,18 @@ function candle_chart(name, chart_data) {
         title: {
             text: name + " 1 Year Chart"
         },
-        subtitles: [{
-            text: "Weekly Averages"
-        }],
-        axisX: {
-        },
         axisY: {
             includeZero: false,
             prefix: "$",
         },
         toolTip: {
-            content: "Date: {x}<br/><strong>Price:</strong><br/>Open: {y[0]}, Close: {y[3]}<br />High: {y[1]}, Low: {y[2]}"
+            content: get_tooltip()
         },
         data: [{
             type: "candlestick",
+            color: "grey",
+            risingColor: "green",
+            fallingColor: "red",    
             yValueFormatString: "$##0.00",
             dataPoints: data_points
         }]
@@ -170,6 +168,40 @@ function parse_data_points(chart_data, data_points) {
     for (day of chart_data) {
         let date = new Date(day['date'])
         let candle = [day['open'], day['high'], day['low'], day['close']];
-        data_points.push({ x: date, y: candle })
+        let data = [day['volume'], day['change']]
+        data_points.push({ x: date, y: candle, z: data })
     }
+}
+
+function get_tooltip() {
+    return `
+    <span class="text-muted">Date: {x}</span>
+    <hr class="tooltip-hr">
+    <table class="tooltip-table" border="0">
+    <tr>
+        <td class="tooltip-left">Open</td>
+        <td>{y[0]}</td>
+    </tr>
+    <tr>
+        <td class="tooltip-left">High</td>
+        <td>{y[1]}</td>
+    </tr>
+    <tr>
+        <td class="tooltip-left">Low</td>
+        <td>{y[2]}</td>
+    </tr>
+    <tr>
+        <td class="tooltip-left">Close</td>
+        <td>{y[3]}</td>
+    </tr>
+    <tr>
+        <td class="tooltip-left">Volume</td>
+        <td>{z[0]}</td>
+    </tr>
+    <tr>
+        <td class="tooltip-left">% Change</td>
+        <td>{z[1]}</td>
+    </tr>
+    </table>
+`;
 }
