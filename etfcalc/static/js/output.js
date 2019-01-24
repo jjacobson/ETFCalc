@@ -166,10 +166,12 @@ function candle_chart(name, chart_data) {
 
 function parse_data_points(chart_data, data_points) {
     for (day of chart_data) {
-        let date = new Date(day['date'])
+        let date = new Date(day['date']);
+        let change = day['change'].toFixed(2);
+        change = change > 0 ? '+' + change.toString() : change;
         let candle = [day['open'], day['high'], day['low'], day['close']];
-        let data = [day['volume'], day['change']]
-        data_points.push({ x: date, y: candle, z: data })
+        let data = [day['volume'].toLocaleString(), change];
+        data_points.push({ x: date, y: candle, label: data });
     }
 }
 

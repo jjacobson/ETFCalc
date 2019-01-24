@@ -101,6 +101,7 @@ def holding_data():
     data = webscraper.get_holding_data(ticker)
     return json.dumps(data)
 
+
 @app.template_filter('strftime')
 def _jinja2_filter_datetime(date, fmt=None):
     return pretty_date(date)
