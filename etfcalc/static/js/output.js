@@ -174,34 +174,5 @@ function parse_data_points(chart_data, data_points) {
 }
 
 function get_tooltip() {
-    return `
-    <span class="text-muted">Date: {x}</span>
-    <hr class="tooltip-hr">
-    <table class="tooltip-table" border="0">
-    <tr>
-        <td class="tooltip-left">Open</td>
-        <td>{y[0]}</td>
-    </tr>
-    <tr>
-        <td class="tooltip-left">High</td>
-        <td>{y[1]}</td>
-    </tr>
-    <tr>
-        <td class="tooltip-left">Low</td>
-        <td>{y[2]}</td>
-    </tr>
-    <tr>
-        <td class="tooltip-left">Close</td>
-        <td>{y[3]}</td>
-    </tr>
-    <tr>
-        <td class="tooltip-left">Volume</td>
-        <td>{z[0]}</td>
-    </tr>
-    <tr>
-        <td class="tooltip-left">% Change</td>
-        <td>{z[1]}</td>
-    </tr>
-    </table>
-`;
+    return document.getElementById('tooltip').innerHTML;
 }
