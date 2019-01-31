@@ -78,6 +78,9 @@
                 <div id="modal-data" class="gone">
                     <div class="col text-center price-data">
                         <div class="row">
+                            <span class="latest-price text-muted w-100"><span id="title"></span> Current Price</span>
+                        </div>
+                        <div class="row">
                             <h4 class="w-100">$<strong id="price"></strong></h4>
                         </div>
                         <div class="row">
@@ -95,6 +98,31 @@
                     <div class="pb-2">
                         <div id="chart-stock" class="chart-stock"></div>
                     </div>
+                    <hr>
+                    <div class="pb-2 mx-2">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th class="text-nowrap" scope="row">Previous Close</th>
+                                    <td id="">xx</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-nowrap" scope="row">Height</th>
+                                    <td>tt</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-nowrap" scope="row">Width</th>
+                                    <td colspan="5">yy</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-nowrap" scope="row">Length</th>
+                                    <td colspan="5">zz</td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -103,31 +131,31 @@
 <template id="tooltip">
     <span class="text-muted">Date: {x}</span>
     <hr class="tooltip-hr">
-    <table class="tooltip-table" border="0">
-    <tr>
-        <td class="tooltip-left">Open</td>
-        <td>{y[0]}</td>
-    </tr>
-    <tr>
-        <td class="tooltip-left">High</td>
-        <td>{y[1]}</td>
-    </tr>
-    <tr>
-        <td class="tooltip-left">Low</td>
-        <td>{y[2]}</td>
-    </tr>
-    <tr>
-        <td class="tooltip-left">Close</td>
-        <td>{y[3]}</td>
-    </tr>
-    <tr>
-        <td class="tooltip-left">Volume</td>
-        <td>{label[0]}</td>
-    </tr>
-    <tr>
-        <td class="tooltip-left">% Change</td>
-        <td>{label[1]}</td>
-    </tr>
+    <table class="tooltip-table">
+        <tr>
+            <td class="tooltip-left">Open</td>
+            <td>{y[0]}</td>
+        </tr>
+        <tr>
+            <td class="tooltip-left">High</td>
+            <td>{y[1]}</td>
+        </tr>
+        <tr>
+            <td class="tooltip-left">Low</td>
+            <td>{y[2]}</td>
+        </tr>
+        <tr>
+            <td class="tooltip-left">Close</td>
+            <td>{y[3]}</td>
+        </tr>
+        <tr>
+            <td class="tooltip-left">Volume</td>
+            <td>{label[0]}</td>
+        </tr>
+        <tr>
+            <td class="tooltip-left">% Change</td>
+            <td>{label[1]}</td>
+        </tr>
     </table>
 </template>
 {% endblock %}

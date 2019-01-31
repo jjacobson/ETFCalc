@@ -106,6 +106,9 @@ function holding_modal(name, ticker) {
 }
 
 function price_display(quote_data) {
+    // title
+    $('#title').text(quote_data['symbol']);
+
     // price
     let price = parseFloat(quote_data['latestPrice'])
     $('#price').text(price);
@@ -122,7 +125,7 @@ function price_display(quote_data) {
     // formatted date and time
     let date = new Date(quote_data['latestUpdate']);
     var am_pm = (date.getHours() < 12) ? "AM" : "PM";
-    var hour = (date.getHours() < 12) ? date.getHours() : date.getHours() - 12;
+    var hour = (date.getHours() <= 12) ? date.getHours() : date.getHours() - 12;
     let timestring = months[date.getMonth()] + ' ' + date.getDate() + ', ' +
         hour + ':' + ('0' + date.getMinutes()).slice(-2) + ' ' + am_pm;
     $('#date').text(timestring);
@@ -168,7 +171,7 @@ function parse_data_points(chart_data, data_points) {
     for (day of chart_data) {
         let date = new Date(day['date']);
         let change = day['change'].toFixed(2);
-        change = change > 0 ? '+' + change.toString() : change;
+        change = change > 0 ? '+' + change : change;
         let candle = [day['open'], day['high'], day['low'], day['close']];
         let data = [day['volume'].toLocaleString(), change];
         data_points.push({ x: date, y: candle, label: data });
