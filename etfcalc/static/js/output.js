@@ -98,10 +98,12 @@ function holding_modal(name, ticker) {
             // todo handle null data
             return;
         }
+        console.log(data)
         data = JSON.parse(data);
         data = data[ticker];
         price_display(data['quote']);
         candle_chart(name, data['chart']);
+        attribute_display(data['quote'], data['stats']);
     });
 }
 
@@ -131,6 +133,27 @@ function price_display(quote_data) {
     $('#date').text(timestring);
 }
 
+function attribute_display(quote_data, stat_data) {
+    $('#attr-close').text(quote_data['previousClose']);
+    $('#attr-open').text(quote_data['open']);
+    $('#attr-bid').text(quote_data['iexBidPrice'] + ' x ' + quote_data['iexBidSize']);
+    $('#attr-ask').text(quote_data['iexAskPrice'] + ' x ' + quote_data['iexAskSize']);
+    $('#attr-daily').text(quote_data['high'].toFixed(2)  + ' - ' + quote_data['low'].toFixed(2) );
+    $('#attr-year').text(quote_data['week52Low'].toFixed(2)  + ' - ' + quote_data['week52High'].toFixed(2));
+    $('#attr-vol').text(quote_data['latestVolume'].toLocaleString());
+    $('#attr-avg-vol').text(quote_data['avgTotalVolume'].toLocaleString());
+
+    let change = (stat_data['ytdChangePercent'] * 100).toFixed(2);
+    $('#attr-change').text(change > 0 ? '+' + change : change);
+    $('#attr-mkt-cap').text(quote_data['marketCap']);
+    $('#attr-pe').text(quote_data['peRatio']);
+    $('#attr-eps').text(stat_data['latestEPS']);
+    $('#attr-beta').text(stat_data['beta']);
+    $('#attr-div-date').text(date_string(stat_data['exDividendDate']));
+    $('#attr-div-yield').text(stat_data['dividendYield']);
+    $('#attr-div-rate').text(stat_data['dividendRate'].toFixed(2));
+}
+
 function candle_chart(name, chart_data) {
     let data_points = []
     let chart = new CanvasJS.Chart('chart-stock', {
@@ -138,7 +161,7 @@ function candle_chart(name, chart_data) {
         zoomEnabled: true,
         theme: "light2", // "light1", "light2", "dark1", "dark2"
         title: {
-            text: name + " 1 Year Chart"
+            text: name + " 52 Week Chart"
         },
         axisY: {
             includeZero: false,
@@ -180,4 +203,9 @@ function parse_data_points(chart_data, data_points) {
 
 function get_tooltip() {
     return document.getElementById('tooltip').innerHTML;
+}
+
+function date_string(date_string) {
+    date = new Date(date_string);
+    return months[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
 }

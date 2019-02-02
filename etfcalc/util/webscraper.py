@@ -74,7 +74,7 @@ def get_stock_news(tickers):
 def get_holding_data(ticker):
     holding_data = {}
     with requests_cache.disabled():
-        data = _get_iex_data([ticker], ['quote', 'chart'], ['displayPercent=true', 'range=1y'])
+        data = _get_iex_data([ticker], ['stats', 'quote', 'chart'], ['displayPercent=true', 'range=1y'])
     return data
 
 
