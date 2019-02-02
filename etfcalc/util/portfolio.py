@@ -3,6 +3,7 @@ class Portfolio(object):
     def __init__(self):
         self.holdings = {}
         self.prices = {}
+        self.currencies = {}
 
     def get_holdings(self):
         return self.holdings
@@ -18,3 +19,9 @@ class Portfolio(object):
 
     def set_price(self, ticker, price):
         self.prices[ticker] = price
+
+    def get_currency(self, ticker):
+        return self.currencies[ticker]
+
+    def set_currency(self, ticker, currency):
+        self.currencies[ticker] = currency

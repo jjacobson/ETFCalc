@@ -49,7 +49,7 @@ function get_data_points(chart_data) {
 function load_news_section() {
     let count = 5;
     let news = document.getElementById('news');
-    for (i = 0; i < news.children.length, count != 0; i++) {
+    for (i = 0; i < news.children.length, count !== 0; i++) {
         let news_item = news.children[i];
         if (!news_item) {
             disable_news_btn();
@@ -60,7 +60,7 @@ function load_news_section() {
         }
         news_item.classList.remove('gone');
         count -= 1;
-        if (i == news.children.length - 1) {
+        if (i === news.children.length - 1) {
             disable_news_btn();
         }
     }

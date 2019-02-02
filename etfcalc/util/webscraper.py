@@ -3,19 +3,26 @@ import json
 import requests_cache
 import time
 import logging
+import pandas as pd
+import urllib.request
 from datetime import date, timedelta, datetime
 from pyquery import PyQuery
 from pandas_datareader.nasdaq_trader import get_nasdaq_symbols
 from .holding import Holding
+from financescraper import scraper, conversions
 
 symbols = get_nasdaq_symbols()
 expire_after = timedelta(days=5)
 requests_cache.install_cache('cache_data', expire_after=expire_after)
 
+yahoo_scraper = scraper.YahooScraper()
+usd_converter = conversions.CurrencyConverter('USD')
+
+
 # Scrape name and holdings if any for a given ticker
-def scrape_ticker(ticker):
+def scrape_ticker(ticker, use_yahoo):
     holdings = []
-    data = get_data(ticker)
+    data = get_data(ticker, use_yahoo)
 
     # invalid ticker
     if data is None:
@@ -27,14 +34,23 @@ def scrape_ticker(ticker):
         _get_stock_data(ticker, data, holdings)
     return holdings
 
+
 # Get the nasdaq data for a given ticker
-def get_data(ticker):
+def get_data(ticker, useYahoo):
     data = None
+    tmp = {'Yahoo': False}
     try:
-        data = symbols.loc[ticker]
+        data = pd.Series(tmp)
+        data = data.append(symbols.loc[ticker])
     except KeyError:
-        logging.info('Failed to get data for ticker ', ticker)
+        data = None
+        if useYahoo:
+            logging.info('Failed to retrieve data for ticker ', ticker, '. Attempting to get it from finance.yahoo.com')
+            data = _get_data_from_yahoo(ticker)
+        else:
+            logging.info('Failed to retrieve data for ticker ', ticker)
     return data
+
 
 # Get latest price for a given ticker
 def get_price(ticker):
@@ -46,11 +62,16 @@ def get_price(ticker):
 def get_company_data(tickers):
     company_data = {}
     data = _get_iex_data(tickers, ['company'])
+    for ticker in tickers:
+        if (ticker not in data) and (ticker != ''):
+            company = _get_company_from_yahoo(ticker)
+            if company is not None:
+                data[ticker] = company
     for ticker, stock in data.items():
         quote = stock['company']
         if quote is None:
             continue
-        company_data[ticker] = {'name' : quote['companyName'], 'sector' : quote['sector'], 'link' : quote['website']}
+        company_data[ticker] = {'name': quote['companyName'], 'sector': quote['sector'], 'link': quote['website']}
     return company_data
 
 
@@ -110,7 +131,8 @@ def _get_etf_data(ticker, data, holdings):
     for row in table('tbody tr').items():
         columns = list(row('td').items())
         ticker = columns[0].children("a").text()
-        holding_data = get_data(ticker)
+        # disable the backup scraping because it is just too slow for larger funds
+        holding_data = get_data(ticker, False)
         if holding_data is None:
             # fall back to getting name from scraped data
             name = columns[1].children("a").text()
@@ -184,6 +206,7 @@ def _make_request(url, redirects=True, throttle=0.0):
         raise ValueError('Request exception') from e
     return response
 
+
 # returns response hook function which sleeps for
 # timeout if the response is not yet cached
 def _throttle_hook(timeout):
@@ -214,7 +237,7 @@ def _get_etf_holding(entry):
     # handle normal cases of actual stocks
     if pq('a').length:
         ticker = pq('a').attr('href').split('/')[2].split(':')[0]
-        holding_data = get_data(ticker)
+        holding_data = get_data(ticker, False)
         if holding_data is None:
             # fall back to getting name from scraped data
             name = pq('a').text().split('(')[0]
@@ -231,3 +254,56 @@ def _get_etf_holding(entry):
         ticker = data
     weight = entry['weight'][:-1]
     return Holding(name, ticker, weight)
+
+
+def _get_data_from_yahoo(ticker):
+    scraped_data = yahoo_scraper.get_data(ticker)
+
+    data_dict = {}
+
+    try:
+        data_dict['Yahoo'] = (scraped_data.source == "Yahoo")
+        data_dict['Price'] = _round_price(scraped_data.price)
+        data_dict['Currency'] = scraped_data.currency
+        data_dict['Security Name'] = scraped_data.name
+        data_dict['ETF'] = scraped_data.etf
+        data = pd.Series(data_dict)
+    except AttributeError:
+        logging.warning("No valid data found for " + ticker)
+
+    return scraped_data if (scraped_data is None) else data
+
+
+def _get_company_from_yahoo(ticker):
+    data = yahoo_scraper.get_company_data(ticker)
+
+    data_dict = {'company': {'symbol': ticker}}
+
+    try:
+        company = data_dict['company']
+        company['companyName'] = data.name
+        company['exchange'] = data.exchange
+        company['industry'] = data.industry
+        company['website'] = data.website
+        company['description'] = data.description
+        company['CEO'] = ''
+        company['issueType'] = ''
+        company['sector'] = data.sector
+        company['tags'] = []
+    except AttributeError:
+        logging.warning("No valid company data found for " + ticker)
+
+    return data if (data is None) else data_dict
+
+
+def to_usd(amount, base_currency_symbol):
+    temp_amount = amount
+    if base_currency_symbol == '€':
+        temp_amount = usd_converter.convert('EUR', amount)
+    elif base_currency_symbol == '¥':
+        temp_amount = usd_converter.convert('JPY', amount)
+    # expandable for a lot of different currencies
+    else:
+        logging.warning("Requested conversion from unknown currency symbol " + base_currency_symbol +
+                        " to USD. Using 1:1 conversion.")
+    return amount if (temp_amount is None) else temp_amount

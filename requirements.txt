@@ -2,3 +2,6 @@ Flask
 requests_cache
 pyquery
 pandas_datareader
+pandas
+requests
+FinanceScraper

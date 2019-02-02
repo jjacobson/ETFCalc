@@ -17,9 +17,10 @@
         <td>
             <div class="input-group">
                 <div class="input-group-prepend">
-                    <span class="input-group-text">$</span>
+                    <span class="input-group-text" id="currency_display"></span>
                 </div>
                 <input type="number" class="no-spinner form-control border-right-0" step="0.01" name="prices">
+                <input type="hidden" name="currency" id="currency_input">
                 <div class="input-group-append">
                     <div class="input-group-text sp-divider bg-white sp-no-border">
                         <div class="spinner spinner-border spinner-border-sm hidden" role="status">
@@ -55,7 +56,7 @@
                     <th>Ticker</th>
                     <th>Shares</th>
                     <th class="w-25">Price</th>
-                    <th></th>
+                    <th> <input type="hidden" name="options" id="session_options"> </th>
                 </tr>
             </thead>
             <tbody id="holding-table"></tbody>
@@ -79,7 +80,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>This may take a while for large funds.</p>
+                <p>This may take a while for large funds or funds with a lot of assets that are not traded in the US. </p>
                 <div class="progress">
                     <div class="progress-bar progress-bar-striped progress-bar-animated"></div>
                 </div>

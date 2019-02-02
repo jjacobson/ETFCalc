@@ -1,17 +1,20 @@
 import requests_cache
 from operator import attrgetter
-from .webscraper import scrape_ticker, get_company_data, get_stock_news
+from .webscraper import scrape_ticker, get_company_data, get_stock_news, to_usd
 from .holding import Holding
 from .portfolio import Portfolio
 
 
-def get_holdings(portfolio):
+def get_holdings(portfolio, use_yahoo):
     data = {}
     total = _get_total(portfolio)
     for ticker, shares in portfolio.get_holdings().items():
         price = portfolio.get_price(ticker)
+        currency = portfolio.get_currency(ticker)
+        if currency != '$':
+            price = to_usd(price, currency)
         ratio = (shares * price) / total
-        holdings = scrape_ticker(ticker)
+        holdings = scrape_ticker(ticker, use_yahoo)
         for holding in holdings:
             underlying = holding.get_ticker()
             weight = float(holding.get_weight()) * ratio
@@ -35,6 +38,7 @@ def handle_stock_data(holdings):
     news = get_stock_news(tickers[:50])
     for holding in holdings:
         ticker = holding.get_ticker()
+        company = None
         if ticker in company_data:
             company = company_data[holding.get_ticker()]
         if company is not None:
@@ -53,9 +57,16 @@ def round_weight(weight):
     return round(weight, 3)
 
 
+def _round_price(price):
+    return format(price, '.2f')
+
+
 def _get_total(portfolio):
     total = 0
     for ticker, shares in portfolio.get_holdings().items():
         price = portfolio.get_price(ticker)
+        currency = portfolio.get_currency(ticker)
+        if currency != '$':
+            price = to_usd(price, currency)
         total += shares * price
     return total

@@ -8,18 +8,41 @@ document.addEventListener('DOMContentLoaded', function () {
 
 document.addEventListener('focusout', function () {
     validate_inputs();    
-})
+});
 
 document.addEventListener('input', function () {
-    validate_inputs();    
-})
+    validate_inputs();
+});
+
+function save_incomplete_data() {
+    if (typeof (Storage) == 'undefined') {
+        return;
+    }
+
+    let data = [];
+    let table = document.getElementById('holding-table');
+    for (let i = 0; i < table.rows.length; i++) {
+        let row = table.rows[i];
+        let ticker = row.querySelector('[name=tickers]').value;
+        let shares = row.querySelector('[name=shares]').value;
+        let price = row.querySelector('[name=prices]').value;
+        if (!ticker) {
+            continue;
+        }
+        let currency = row.querySelector('#currency_display').innerText;
+
+        data.push([ticker.toUpperCase(), shares, price, currency]);
+        console.log(data);
+    }
+    sessionStorage.setItem('form-data', JSON.stringify(data));
+}
 
 function save_data() {
     if (typeof (Storage) == 'undefined') {
         return;
     }
 
-    let data = []
+    let data = [];
     let table = document.getElementById('holding-table');
     for (let i = 0; i < table.rows.length; i++) {
         let row = table.rows[i];
@@ -28,7 +51,8 @@ function save_data() {
         let price = row.querySelector('[name=prices]').value;
         if (!(ticker && shares && price))
             continue;
-        data.push([ticker.toUpperCase(), shares, price]);
+        let currency = row.querySelector('#currency_display').innerText;
+        data.push([ticker.toUpperCase(), shares, price, currency]);
     }
     sessionStorage.setItem('form-data', JSON.stringify(data));
 }
@@ -36,6 +60,8 @@ function save_data() {
 function load_data() {
     let table = document.getElementById('holding-table');
     let session_data = sessionStorage['form-data'];
+
+    document.querySelector('#session_options').value = get_options();
 
     if (!session_data) {
         return;
@@ -46,13 +72,15 @@ function load_data() {
     }
 
     for (let i = 0; i < data.length; i++) {
-        if (!(data[i][0] && data[i][1] && data[i][2]))
+        if (!(data[i][0]))
             continue;
 
         let row = table.rows[i];
         row.querySelector('[name=tickers]').value = data[i][0];
         row.querySelector('[name=shares]').value = data[i][1];
         row.querySelector('[name=prices]').value = data[i][2];
+        row.querySelector('#currency_display').innerText = data[i][3];
+        row.querySelector('#currency_input').value = data[i][3];
     }
     validate_inputs();
 }
@@ -61,7 +89,7 @@ function add_row() {
     let row = document.getElementsByTagName('template')[0];
     let table = document.getElementById('holding-table');
     let clone = row.content.cloneNode(true);
-    if (table.rows.length == 1) {
+    if (table.rows.length === 1) {
         let button = table.rows[0].querySelector('button');
         button.removeAttribute('disabled');
     }
@@ -75,7 +103,7 @@ function remove_row(el) {
     $(tr.querySelectorAll('input')[0]).tooltip({ trigger: 'manual' }).tooltip('hide');
     tr.parentElement.removeChild(tr);
 
-    if (table.rows.length == 1) {
+    if (table.rows.length === 1) {
         let button = table.rows[0].querySelector('button');
         button.setAttribute('disabled', true);
     }
@@ -91,7 +119,8 @@ function ticker_value(el, ticker) {
     spinner.classList.remove('hidden');
     $.ajax({
         data: {
-            ticker: ticker
+            ticker: ticker,
+            options: get_options()
         },
         type: 'POST',
         url: '/ticker_value'
@@ -99,16 +128,29 @@ function ticker_value(el, ticker) {
         spinner.classList.add('hidden');
         if (data.error) {
             console.log('Error fetching price data', data.error);
+            save_incomplete_data();
             return;
         }
-        if (data == 'null') {
+        if (data === 'null') {
             invalid_ticker(el, ticker);
+            save_incomplete_data();
             return;
         }
+        let data_object = JSON.parse(data);
         let price_input = tr.querySelectorAll('input')[2];
+        let currency_display = tr.querySelector('#currency_display');
+        let currency_input = tr.querySelector('#currency_input');
         $(el).tooltip({ trigger: 'manual' }).tooltip('hide');
-        price_input.value = data;
+        price_input.value = data_object.price;
+        if (data_object.currency === 'EUR') {
+            currency_input.value = currency_display.innerText = '€';
+        } else if (data_object.currency === 'JPY') {
+            currency_input.value = currency_display.innerText = '¥';
+        } else {
+            currency_input.value = currency_display.innerText = '$';
+        }
         validate_inputs();
+        save_incomplete_data();
     });
 }
 
@@ -134,4 +176,17 @@ function valid_row(row) {
     let shares = row.querySelector('[name=shares]').value;
     let price = row.querySelector('[name=prices]').value;
     return (ticker && (shares > 0) && price);
+}
+
+function get_options() {
+    if (typeof(Storage) == 'undefined') {
+        return '[]'
+    }
+
+    let data = localStorage['option-data'];
+    if (!data) {
+        return '[]'
+    }
+
+    return data;
 }
