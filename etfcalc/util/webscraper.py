@@ -11,6 +11,7 @@ from .holding import Holding
 symbols = get_nasdaq_symbols()
 expire_after = timedelta(days=5)
 requests_cache.install_cache('cache_data', expire_after=expire_after)
+#token = next(open('./token.txt')) iexcloud
 
 # Scrape name and holdings if any for a given ticker
 def scrape_ticker(ticker):
@@ -74,7 +75,7 @@ def get_stock_news(tickers):
 def get_holding_data(ticker):
     holding_data = {}
     with requests_cache.disabled():
-        data = _get_iex_data([ticker], ['stats', 'quote', 'chart'], ['displayPercent=true', 'range=1y'])
+        data = _get_iex_data([ticker], ['stats', 'quote', 'chart', 'dividends'], ['displayPercent=true', 'range=5y'])
     return data
 
 
@@ -171,6 +172,7 @@ def _get_iex_data(tickers, options, settings=None):
     for i in range(0, len(tickers), 100):
         subset = ",".join(tickers[i:i+100])
         url = 'https://api.iextrading.com/1.0/stock/market/batch?symbols={0}&types={1}'.format(subset, options)
+        #url = 'https://cloud.iexapis.com/beta/stock/market/batch?symbols={0}&types={1}&token={2}'.format(subset, options, token)
         data.update(_make_request(url, redirects=False).json())
     return data
 

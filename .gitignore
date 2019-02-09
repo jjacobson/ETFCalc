@@ -8,3 +8,4 @@ etfcalc/util/__pycache__
 examples/
 build/
 dist/
+token.txt

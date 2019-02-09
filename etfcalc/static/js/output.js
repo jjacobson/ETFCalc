@@ -5,14 +5,21 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 $(document).ready(function () {
-    let table = $('#output-table').DataTable({
+    let holding_table = $('#output-table').DataTable({
         "order": [[3, "desc"]],
         "lengthMenu": [15, 25, 50, 100],
         "pageLength": 15
     });
     $('#output-table tbody').on('click', 'tr', function () {
-        let data = table.row(this).data();
+        let data = holding_table.row(this).data();
         holding_modal(data[0], data[1]);
+    });
+
+    $('#div-table').DataTable({
+        "order": [[0, "desc"]],
+        "pageLength": 8,
+        "lengthChange": false,
+        "searching": false
     });
 
     let chart_data = $('#chart_data').data('charts');
@@ -98,12 +105,12 @@ function holding_modal(name, ticker) {
             // todo handle null data
             return;
         }
-        console.log(data)
         data = JSON.parse(data);
         data = data[ticker];
         price_display(data['quote']);
         candle_chart(name, data['chart']);
         attribute_display(data['quote'], data['stats']);
+        dividend_history(data['dividends']);
     });
 }
 
@@ -136,10 +143,10 @@ function price_display(quote_data) {
 function attribute_display(quote_data, stat_data) {
     $('#attr-close').text(quote_data['previousClose']);
     $('#attr-open').text(quote_data['open']);
-    $('#attr-bid').text(quote_data['iexBidPrice'] + ' x ' + quote_data['iexBidSize']);
-    $('#attr-ask').text(quote_data['iexAskPrice'] + ' x ' + quote_data['iexAskSize']);
-    $('#attr-daily').text(quote_data['high'].toFixed(2)  + ' - ' + quote_data['low'].toFixed(2) );
-    $('#attr-year').text(quote_data['week52Low'].toFixed(2)  + ' - ' + quote_data['week52High'].toFixed(2));
+    $('#attr-bid').text(bid_ask_display(quote_data['iexBidPrice'], quote_data['iexBidSize']));
+    $('#attr-ask').text(bid_ask_display(quote_data['iexAskPrice'], quote_data['iexAskSize']));
+    $('#attr-daily').text(quote_data['high'].toFixed(2) + ' - ' + quote_data['low'].toFixed(2));
+    $('#attr-year').text(quote_data['week52Low'].toFixed(2) + ' - ' + quote_data['week52High'].toFixed(2));
     $('#attr-vol').text(quote_data['latestVolume'].toLocaleString());
     $('#attr-avg-vol').text(quote_data['avgTotalVolume'].toLocaleString());
 
@@ -154,6 +161,27 @@ function attribute_display(quote_data, stat_data) {
     $('#attr-div-rate').text(stat_data['dividendRate'].toFixed(2));
 }
 
+function bid_ask_display(bid, ask) {
+    return bid && ask ? bid + ' x ' + ask : 'Markets Closed'
+}
+
+function dividend_history(dividend_data) {
+    let table = $('#div-body');
+    for (let i = 0; i < dividend_data.length; i++) {
+        let change = '-';
+        if (dividend_data.length > i + 1) {
+            let newer = dividend_data[i]['amount'];
+            let older = dividend_data[i + 1]['amount'];
+            if (newer != older) {
+                change = (((newer - older) / older) * 100).toFixed(2) + '%';
+            }
+        }
+        $('#div-table').DataTable().row.add([
+            dividend_data[i]['exDate'], dividend_data[i]['paymentDate'], dividend_data[i]['amount'], change
+        ]).draw();
+    }
+}
+
 function candle_chart(name, chart_data) {
     let data_points = []
     let chart = new CanvasJS.Chart('chart-stock', {
@@ -161,7 +189,7 @@ function candle_chart(name, chart_data) {
         zoomEnabled: true,
         theme: "light2", // "light1", "light2", "dark1", "dark2"
         title: {
-            text: name + " 52 Week Chart"
+            text: name + " - 5Y Chart"
         },
         axisY: {
             includeZero: false,
@@ -174,8 +202,9 @@ function candle_chart(name, chart_data) {
             type: "candlestick",
             color: "grey",
             risingColor: "green",
-            fallingColor: "red",    
+            fallingColor: "red",
             yValueFormatString: "$##0.00",
+            xValueFormatString: "DD MMM YYYY",
             dataPoints: data_points
         }]
     });
@@ -186,6 +215,7 @@ function candle_chart(name, chart_data) {
         $('#modal-data').addClass('gone');
         $('#change-header').removeClass('positive negative');
         $('.caret').addClass('gone');
+        $('#div-body').empty();
         chart.destroy();
     })
 }

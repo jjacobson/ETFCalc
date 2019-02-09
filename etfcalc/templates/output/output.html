@@ -99,8 +99,9 @@
                         <div id="chart-stock" class="chart-stock"></div>
                     </div>
                     <hr>
+                    <h5 class="mx-1">Key Stats</h5>
                     <div class="row pb-2 mx-1">
-                        <div class="column w-50 pr-2">
+                        <div class="column w-50 pr-1">
                             <ul class="list-group list-attribute">
                                 <li class="list-group-item">
                                     <span class="text-muted">Previous Close</span>
@@ -135,7 +136,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="column w-50 pl-2">
+                        <div class="column w-50 pl-1">
                             <ul class="list-group list-attribute">
                                 <li class="list-group-item">
                                     <span class="text-muted">YTD Change</span>
@@ -171,6 +172,21 @@
                                 </li>
                             </ul>
                         </div>
+                    </div>
+                    <hr>
+                    <h5 class="mx-1">Dividend History</h5>
+                    <div class="row pb-2 mx-1">
+                        <table class="table table-sm" id="div-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Ex-Dividend Date</th>
+                                    <th scope="col">Payment Date</th>
+                                    <th scope="col">Payment Amount</th>
+                                    <th scope="col">Change</th>
+                                </tr>
+                            </thead>
+                            <tbody id="div-body"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>

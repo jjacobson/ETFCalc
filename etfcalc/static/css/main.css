@@ -83,7 +83,8 @@
 }
 
 .price-data {
-    width: 15%;
+/*  width: 15%; */
+    width: 100%;
 }
 
 .latest-price {
@@ -113,5 +114,5 @@
 }
 
 .list-attribute > .list-group-item {
-    padding: 0.55rem 1.25rem !important;
+    padding: 0.5rem 1.25rem !important;
 }
