@@ -8,5 +8,10 @@ I used this project to familiarize myself with web development and the flask fra
 
 ### Pictures
 ![Input page](https://i.imgur.com/ZpSl4Sx.png)
+
+<hr>
+
 ![Output page](https://i.imgur.com/hXzEMJg.png)
+<hr>
+
 ![Holding Info](https://i.imgur.com/dVuSdjk.png)
