@@ -116,3 +116,7 @@
 .list-attribute > .list-group-item {
     padding: 0.5rem 1.25rem !important;
 }
+
+.font-weight-med {
+    font-weight: 500!important;
+}
