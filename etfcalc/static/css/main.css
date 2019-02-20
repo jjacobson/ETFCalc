@@ -6,12 +6,25 @@
     padding: 0.5rem;
 }
 
+.btn_header_cell {
+    padding: 0.5rem !important;
+}
+
 .dt-bootstrap4 {
     width: 100% !important;
 }
 
 .btn-del-row {
     font-weight: 700;
+}
+
+.btn-refresh-row {
+    font-weight: 700;
+}
+
+.btn-refresh-table {
+    font-weight: 900;
+    width: 100%;
 }
 
 .progress-bar {

@@ -82,6 +82,22 @@ function remove_row(el) {
     validate_inputs();
 }
 
+function refresh_row(el) {
+    let tr = el.parentElement.parentElement;
+    let ticker_input = tr.querySelector('[name="tickers"]');
+    ticker_value(ticker_input, ticker_input.value);
+}
+
+function refresh_table(el) {
+    let table = el.parentElement.parentElement.parentElement.parentElement;
+    let rows = table.querySelectorAll('tr');
+    // start at i = 1 to skit the header
+    for (let i = 1; i < rows.length; ++i) {
+        let ticker_input = rows[i].querySelector('[name="tickers"]');
+        ticker_value(ticker_input, ticker_input.value);
+    }
+}
+
 function ticker_value(el, ticker) {
     if (!ticker) {
         return;
