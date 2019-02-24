@@ -7,5 +7,11 @@ An [exchange traded fund (etf)](https://en.wikipedia.org/wiki/Exchange-traded_fu
 I used this project to familiarize myself with web development and the flask framework. Stock price data is retrieved from yahoo finance through the use of Pandas Datareader. ETF holdings are currently scraped from http://etfdb.com through python requests.
 
 ### Pictures
-![Input page](https://i.imgur.com/0T4CALr.png)
+![Input page](https://i.imgur.com/ZpSl4Sx.png)
+
+<hr>
+
 ![Output page](https://i.imgur.com/hXzEMJg.png)
+<hr>
+
+![Holding Info](https://i.imgur.com/dVuSdjk.png)
